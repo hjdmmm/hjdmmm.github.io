@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>hjdmmm博客后台</title>
+  <link href="../../css/common-edit.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <h1>编辑用户</h1>
+  <div>ID <span id="id"></span></div>
+  <div>用户名称 <input class="text" id="user-name" type="text"></div>
+  <div>用户昵称 <input class="text" id="nick-name" type="text"></div>
+  <div>用户密码 <input class="text" id="password" type="password"></div>
+  <div>状态 <select id="type">
+    <option value="0">普通用户</option>
+    <option value="1">管理员用户</option>
+  </select></div>
+  <div>状态 <select id="status">
+    <option value="0">正常</option>
+    <option value="1">禁用</option>
+  </select></div>
+  <div>
+    <input class="submit-button" id="submit" onclick="submit();" type="button" value="确定">
+    <input class="cancel-button" id="cancel" onclick="cancel();" type="button" value="取消">
+  </div>
+</div>
+</body>
+</html>
+
+<script src="../../js/ajax.js"></script>
+<script src="../../js/url.js"></script>
+<script src="../../js/login.js"></script>
+<script src="../../js/input.js"></script>
+<script>
+  let id;
+
+  const submit = function () {
+    const userName = document.getElementById("user-name").value;
+    const nickName = document.getElementById("nick-name").value;
+    const password = document.getElementById("password").value;
+    const type = parseInt(getSelectValue(document.getElementById("type")));
+    const status = parseInt(getSelectValue(document.getElementById("status")));
+    const param = {
+      'id': id,
+      'userName': userName,
+      'nickName': nickName,
+      'password': password,
+      'type': type,
+      'status': status,
+    }
+    ajax.put("admin/user", param, function () {
+      window.alert("操作成功");
+      window.history.back();
+    })
+  }
+
+  const cancel = function () {
+    window.history.back();
+  }
+
+  const show = function (userGetVO) {
+    document.getElementById("user-name").value = userGetVO.userName;
+    document.getElementById("nick-name").value = userGetVO.nickName;
+    setSelectValue(document.getElementById("type"), userGetVO.type.toString());
+    setSelectValue(document.getElementById("status"), userGetVO.status.toString());
+  }
+
+  window.onload = function () {
+    if (!existToken()) {
+      window.location.href = "../user/login.html";
+    }
+
+    id = getUrlParam(window.location.search, "id");
+    document.getElementById("id").innerText = id;
+
+    ajax.get("admin/user/" + id, null, show);
+  }
+</script>

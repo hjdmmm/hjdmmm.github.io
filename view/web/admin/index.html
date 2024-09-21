@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>hjdmmm博客后台</title>
+  <script src="./js/login.js"></script>
+  <script>
+    if (existToken()) {
+      window.location.href = "./html/article/write.html";
+    } else {
+      window.location.href = "./html/user/login.html";
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>

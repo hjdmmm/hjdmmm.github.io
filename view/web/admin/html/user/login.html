@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>hjdmmm博客后台</title>
+</head>
+<body>
+<div>
+  <div>用户名 <input id="username" type="text"></div>
+  <div>密码 <input id="password" type="password"></div>
+  <div><input id="login" onclick="login()" type="button" value="登录"></div>
+</div>
+</body>
+</html>
+
+<script src="../../js/ajax.js"></script>
+<script>
+  const login = function () {
+    const userName = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    ajax.post("system/login", {
+      'userName': userName,
+      'password': password,
+    }, (loginVO) => {
+      let tokenMaxAgeSeconds = loginVO.tokenMaxAgeSeconds;
+      if (tokenMaxAgeSeconds === null) {
+        tokenMaxAgeSeconds = 3600;
+      }
+      document.cookie = "token=" + loginVO.token + "; max-age=" + tokenMaxAgeSeconds + "; path=/";
+      window.location.href = "../article/write.html";
+    });
+  }
+</script>

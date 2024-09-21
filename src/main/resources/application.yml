@@ -1,0 +1,64 @@
+server:
+  port: 8989
+  allowed-origin-patterns: "*"
+spring:
+  profiles:
+    active: windows-dev
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 5MB
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      logic-delete-field: delFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      id-type: auto
+---
+spring:
+  config:
+    activate:
+      on-profile: windows-dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/hjdmmm_blog?characterEncoding=utf-8&serverTimeZone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+attachment:
+  local-path: E:\temp\hjdmmm_blog\attachment\
+logging:
+  level:
+    root: debug
+  file:
+    name: E:\temp\hjdmmm_blog\log\hjdmmm_blog.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: ${logging.file.name}.%d{yyyy-MM-dd-HH}.%i
+      clean-history-on-start: true
+---
+spring:
+  config:
+    activate:
+      on-profile: linux-dev
+  datasource:
+    url: jdbc:mysql://mysql:3306/hjdmmm_blog?characterEncoding=utf-8&serverTimeZone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+attachment:
+  local-path: /hjdmmm_blog/attachment/
+logging:
+  level:
+    root: debug
+  file:
+    name: /tmp/hjdmmm_blog/logs/hjdmmm_blog.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: ${logging.file.name}.%d{yyyy-MM-dd-HH}.%i
+      clean-history-on-start: true

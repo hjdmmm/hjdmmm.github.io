@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>hjdmmm博客后台</title>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css"
+        rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css"
+        rel="stylesheet">
+  <link href="../../css/global.css" rel="stylesheet">
+  <style>
+    .inner-center-row {
+      margin-bottom: 20px;
+    }
+
+    .inner-center-row .input-box {
+      width: 80%;
+      border-radius: 4px;
+      border: 1px solid #DCDFE6;
+      height: 40px;
+      line-height: 40px;
+      color: #606266;
+      padding: 0 15px;
+    }
+
+    .inner-center-row select {
+      color: #606266;
+      width: 80%;
+      height: 40px;
+      line-height: 32px;
+      outline: 0;
+      padding: 0 15px;
+      font-size: 14px;
+      border: 1px solid #DCDFE6;
+      border-radius: 4px;
+    }
+
+    .inner-center-row span {
+      cursor: default;
+      position: relative;
+      right: 20px;
+    }
+
+    .tag-list-div {
+      position: relative;
+    }
+
+    .tag-list {
+      position: absolute;
+      left: 28%;
+      top: 33%;
+      z-index: 999;
+      width: 15%;
+      border: 1px solid #E4E7ED;
+      border-radius: 4px;
+      background: #ffffff;
+      min-width: 202px;
+      list-style: none;
+      padding: 6px 0;
+      margin: 0;
+      visibility: hidden;
+    }
+
+    .tag-list li {
+      color: #606266;
+      font-size: 14px;
+    }
+
+    .submit {
+      padding: 10px 20px;
+      font-size: 14px;
+      border-radius: 4px;
+      color: #FFF;
+      background-color: #409EFF;
+      border: 1px solid #409EFF;
+      line-height: 1;
+    }
+
+    .submit:hover {
+      background: #3a8ee6;
+      border-color: #3a8ee6;
+    }
+
+    .draft {
+      margin-left: 50px;
+      padding: 10px 20px;
+      font-size: 14px;
+      border-radius: 4px;
+      color: #FFF;
+      background-color: #15ab4b;
+      border: 1px solid #15ab4b;
+      line-height: 1;
+    }
+
+    .draft:hover {
+      background: #0c5b28;
+      border-color: #0c5b28;
+    }
+
+    .center .content-area {
+      margin-bottom: 20px;
+      height: 500px;
+    }
+
+    .center .content-area .content-div {
+      width: 48%;
+      height: 100%;
+      display: inline-block;
+      border-right: 2px solid gray;
+    }
+
+    .center .content-area .display-div {
+      width: 48%;
+      height: 100%;
+      display: inline-block;
+    }
+
+    .center .content-area .content-div textarea {
+      width: 100%;
+      height: 100%;
+      resize: none;
+      padding: 10px;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box; /*Firefox*/
+      -webkit-box-sizing: border-box; /*Safari*/
+    }
+
+    .center .content-area .display-div .display {
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+      background-color: rgb(251, 251, 251);
+      overflow-y: scroll;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box; /*Firefox*/
+      -webkit-box-sizing: border-box; /*Safari*/
+    }
+
+    .center .up {
+      overflow: hidden;
+    }
+
+    .center .left-info {
+      display: inline-block;
+      float: left;
+      width: 50%;
+    }
+
+    .center .right-info {
+      display: inline-block;
+    }
+
+    img {
+      max-width: 70%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="left-side">
+    <ul>
+      <li><a href="./write.html">写博文</a></li>
+      <li><a href="./article.html">文章管理</a></li>
+      <li><a href="../link/link.html">推荐网站管理</a></li>
+      <li><a href="../category/category.html">分类管理</a></li>
+      <li><a href="../tag/tag.html">标签管理</a></li>
+      <li><a href="../user/user.html">用户管理</a></li>
+      <li><a href="../image/image.html">图片管理</a></li>
+    </ul>
+  </div>
+  <div class="center">
+    <div class="inner-header">
+      <h1>写博文</h1>
+      <input type="button" value="退出" onclick="logout('../user/login.html');">
+    </div>
+    <div class="inner-center tag-list-div">
+      <ul class="tag-list" id="tag-list">
+      </ul>
+      <div class="up">
+        <div class="left-info">
+          <div class="inner-center-row">标题 <input class="input-box" id="title" type="text"></div>
+          <div class="inner-center-row">摘要 <input class="input-box" id="summary" type="text"></div>
+          <div class="inner-center-row">
+            分类
+            <select id="category-list">
+            </select>
+          </div>
+          <div class="inner-center-row" id="tag-button" onclick="onChangeTagShowMode();">
+            标签 <input class="input-box" disabled id="selected-tags" type="text"><span
+              id="tag-list-show">↓</span>
+          </div>
+        </div>
+        <div class="right-info">
+          <div class="inner-center-row">允许评论
+            <input checked name="comment" type="radio" value="1">是
+            <input name="comment" type="radio" value="0">否
+          </div>
+          <div class="inner-center-row">文章置顶
+            <input name="top" type="radio" value="1">是
+            <input checked name="top" type="radio" value="0">否
+          </div>
+          <div class="inner-center-row">图片上传
+            <input type="file" accept="image/*" id="upload" onchange="showImage(this.files); document.getElementById('check-upload').disabled=false;">
+            <div id="img-area" style="display: none;">
+              <img id="img" alt="" src="">
+              <div><input type="button" id="check-upload" value="点此上传" onclick="uploadImage(); document.getElementById('check-upload').disabled=true;"></div>
+              <div><span id="img-url"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-area">
+        <div class="content-div">
+          <textarea id="content" oninput="toMarkdown()"></textarea>
+        </div>
+        <div class="display-div">
+          <div class="display" id="display"></div>
+        </div>
+      </div>
+
+      <div class="inner-center-row">
+        <input class="submit" onclick="save(false);" type="button" value="保存为正式文档">
+        <input class="draft" onclick="save(true);" type="button" value="保存为草稿">
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/5.1.1/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="../../js/ajax.js"></script>
+<script src="../../js/input.js"></script>
+<script src="../../js/url.js"></script>
+<script src="../../js/login.js"></script>
+<script>
+  const tagMap = new Map();
+  let id;
+
+  const showCategoryList = function (categoryList) {
+    const categoryListEle = document.getElementById("category-list");
+    for (let category of categoryList) {
+      const categoryEle = document.createElement("option");
+      categoryEle.value = category.id;
+      categoryEle.innerText = category.name;
+      categoryListEle.appendChild(categoryEle);
+    }
+  }
+
+  const changeTagList = function () {
+    const tagEleArr = [...document.getElementsByName("tag")];
+    const selectedTags = tagEleArr.filter(tagEle => tagEle.checked);
+    const selectedTagsEle = document.getElementById("selected-tags");
+    selectedTagsEle.value = '';
+    for (let selectedTag of selectedTags) {
+      selectedTagsEle.value += tagMap.get(selectedTag.value);
+      selectedTagsEle.value += " ";
+    }
+  }
+
+  const showTagList = function (tagList) {
+    const tagListEle = document.getElementById("tag-list");
+    for (let tag of tagList) {
+      tagMap.set(tag.id, tag.name);
+      const liEle = document.createElement("li");
+      const tagEle = document.createElement("input");
+      tagEle.type = "checkbox";
+      tagEle.name = "tag";
+      tagEle.value = tag.id;
+      tagEle.onchange = changeTagList;
+      liEle.appendChild(tagEle);
+      liEle.append(tag.name);
+      tagListEle.appendChild(liEle);
+    }
+  }
+
+  const save = function (isDraft) {
+    const tagEleArr = [...document.getElementsByName("tag")];
+    const selectedTags = tagEleArr.filter(tagEle => tagEle.checked).map(tagEle => tagEle.value);
+    const categoryListEle = document.getElementById("category-list");
+    const categoryId = categoryListEle.options[categoryListEle.selectedIndex].value;
+    const saveParam = {
+      'content': document.getElementById("content").value,
+      'title': document.getElementById("title").value,
+      'summary': document.getElementById("summary").value,
+      'comment': getRadioValue(document.getElementsByName("comment")) === "1",
+      'top': getRadioValue(document.getElementsByName("top")) === "1",
+      'draft': isDraft,
+      'tags': selectedTags,
+      'categoryId': categoryId,
+    };
+
+    if (id != null) {
+      saveParam['id'] = id;
+      ajax.put("admin/article", saveParam, function () {
+        window.alert("提交成功");
+      });
+    } else {
+      ajax.post("admin/article", saveParam, function () {
+        window.alert("提交成功");
+      });
+    }
+  }
+
+  const onChangeTagShowMode = function () {
+    const tagListEle = document.getElementById("tag-list");
+    const tagListShowEle = document.getElementById("tag-list-show");
+    if (tagListEle.style.visibility === "hidden") {
+      tagListEle.style.visibility = "visible";
+      tagListShowEle.innerText = "↑"
+    } else {
+      tagListEle.style.visibility = "hidden";
+      tagListShowEle.innerText = "↓"
+    }
+  }
+
+  const toMarkdown = function () {
+    const contentEle = document.getElementById("content");
+    const warnFunction = console.warn;
+    console.warn = function () {
+    }
+    document.getElementById("display").innerHTML = marked.parse(contentEle.value,
+        {
+          highlight: function (code, lang) {
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+            return hljs.highlight(code, {language}).value;
+          },
+          breaks: true,
+        });
+    console.warn = warnFunction;
+  }
+
+  const showArticle1 = function (categoryList) {
+    showCategoryList(categoryList);
+    ajax.get("admin/tag/listAll", null, showArticle2);
+  }
+
+  const showArticle2 = function (tagList) {
+    showTagList(tagList);
+    ajax.get("admin/article/" + id, null, showArticle3);
+  }
+
+  const showArticle3 = function (article) {
+    document.getElementById("title").value = article.title;
+    document.getElementById("summary").value = article.summary;
+    document.getElementById("content").value = article.content;
+    setRadioValue(document.getElementsByName("comment"), article.top ? "0" : "1");
+    setRadioValue(document.getElementsByName("top"), article.comment ? "0" : "1");
+    toMarkdown();
+    setSelectValue(document.getElementById("category-list"), article.categoryId);
+    const tagEleArr = [...document.getElementsByName("tag")];
+    const selectedTags = tagEleArr.filter(tagEle => article.tags.includes(tagEle.value));
+    for (let selectedTag of selectedTags) {
+      selectedTag.checked = true;
+    }
+    changeTagList();
+  }
+
+  const showImage = function (files) {
+    if (files.length === 0) {
+      return;
+    }
+
+    document.getElementById("img").src = URL.createObjectURL(files[0]);
+    document.getElementById("img-url").innerText = "";
+    document.getElementById("img-area").style.display = "block";
+  }
+
+  const uploadImage = function () {
+    const files = document.getElementById("upload").files;
+    if (!files || !files[0]) {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("img", files[0]);
+    ajax.post("admin/image", formData, (attachmentId) => {
+      const url = prefixUrl + "image/" + attachmentId;
+      window.alert("上传成功，链接已复制至剪贴板");
+      const urlEle = document.getElementById("img-url");
+      urlEle.innerText = url;
+      navigator.clipboard.writeText(url);
+    });
+  }
+
+  window.onload = function () {
+    if (!existToken()) {
+      window.location.href = "../user/login.html";
+    }
+
+    id = getUrlParam(window.location.search, "id");
+    if (id !== null) {
+      ajax.get("admin/category/listAll", null, showArticle1);
+    } else {
+      ajax.get("admin/category/listAll", null, showCategoryList);
+      ajax.get("admin/tag/listAll", null, showTagList);
+    }
+  }
+</script>

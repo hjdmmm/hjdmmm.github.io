@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>hjdmmm博客后台</title>
+  <link href="../../css/common-edit.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <h1>编辑分类</h1>
+  <div>ID <span id="id"></span></div>
+  <div>标签名 <input class="text" id="name" type="text"></div>
+  <div>备注 <input class="text" id="remark" type="text"></div>
+  <div>
+    <input class="submit-button" id="submit" onclick="submit();" type="button" value="确定">
+    <input class="cancel-button" id="cancel" onclick="cancel();" type="button" value="取消">
+  </div>
+</div>
+</body>
+</html>
+
+<script src="../../js/ajax.js"></script>
+<script src="../../js/url.js"></script>
+<script src="../../js/login.js"></script>
+<script src="../../js/input.js"></script>
+<script>
+  let id;
+
+  const submit = function () {
+    const name = document.getElementById("name").value;
+    const remark = document.getElementById("remark").value;
+    const param = {
+      'id': id,
+      'name': name,
+      'remark': remark,
+    }
+    ajax.put("admin/tag", param, function () {
+      window.alert("操作成功");
+      window.history.back();
+    })
+  }
+
+  const cancel = function () {
+    window.history.back();
+  }
+
+  const show = function (tag) {
+    document.getElementById("name").value = tag.name;
+    document.getElementById("remark").value = tag.remark;
+  }
+
+  window.onload = function () {
+    if (!existToken()) {
+      window.location.href = "../user/login.html";
+    }
+
+    id = getUrlParam(window.location.search, "id");
+    document.getElementById("id").innerText = id;
+
+    ajax.get("admin/tag/" + id, null, show);
+  }
+</script>

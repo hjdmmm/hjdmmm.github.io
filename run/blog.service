@@ -1,0 +1,14 @@
+[Unit]
+Description=hjdmmm blog
+After=network.target mysql.service
+Requisite=network.target mysql.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/jdk1.8.0_361/bin/java -Xms128m -Xmx256m -jar /usr/local/hjdmmm_blog/blog.jar --spring.profiles.active=pro
+WorkingDirectory=/usr/local/hjdmmm_blog
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
