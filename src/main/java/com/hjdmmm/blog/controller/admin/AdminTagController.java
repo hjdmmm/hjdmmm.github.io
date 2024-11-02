@@ -5,7 +5,6 @@ import com.hjdmmm.blog.domain.ResponseResult;
 import com.hjdmmm.blog.domain.entity.Tag;
 import com.hjdmmm.blog.domain.model.AddTagModel;
 import com.hjdmmm.blog.domain.model.EditTagModel;
-import com.hjdmmm.blog.domain.model.TagListModel;
 import com.hjdmmm.blog.domain.vo.LinkListAllVO;
 import com.hjdmmm.blog.domain.vo.PageVO;
 import com.hjdmmm.blog.enums.AuthTypeEnum;
@@ -63,11 +62,11 @@ public class AdminTagController {
     }
 
     @GetMapping("/list")
-    public ResponseResult<PageVO<Tag>> list(Integer pageNum, Integer pageSize, TagListModel tagListModel) {
+    public ResponseResult<PageVO<Tag>> list(Integer pageNum, Integer pageSize, String name, String remark) {
         PageVO<Tag> pageVO = tagService.list(
                 Optional.ofNullable(pageNum).orElse(1),
                 Optional.ofNullable(pageSize).orElse(10),
-                tagListModel.getName(), tagListModel.getRemark());
+                name, remark);
         return ResponseResult.okResult(pageVO);
     }
 

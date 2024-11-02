@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(String userName, String nickName, String password, Integer type, Integer status) throws UserNameExistException {
-        boolean userNameExist = userDAO.countByUserName(userName) > 0L;
+        boolean userNameExist = userDAO.countByUserNameForUpdate(userName) > 0L;
         if (userNameExist) {
             throw new UserNameExistException();
         }
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void edit(long id, String userName, String nickName, String password, Integer type, Integer status) throws UserNameExistException {
-        boolean userNameExist = userDAO.countByUserName(userName) > 0L;
+        boolean userNameExist = userDAO.countByUserNameForUpdate(userName) > 0L;
         if (userNameExist) {
             throw new UserNameExistException();
         }

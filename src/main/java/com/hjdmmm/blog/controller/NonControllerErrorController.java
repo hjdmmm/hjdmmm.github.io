@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,30 +33,44 @@ public class NonControllerErrorController extends BasicErrorController {
     @Override
     public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
         Map<String, Object> resultMap = getResultMap(request);
-        return new ResponseEntity<>(resultMap, HttpStatus.OK);
+        return ResponseEntity.ok(resultMap);
     }
 
     public void respondExceptionTip(HttpServletRequest request, HttpServletResponse response, ResponseResult<Void> result) {
+        String json;
         try {
-            // 跨域
-            response.addHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-            response.addHeader("Access-Control-Allow-Credentials", "true");
+            json = objectMapper.writeValueAsString(result);
+        } catch (Exception e) {
+            log.error("返回异常提示时异常", e);
+            return;
+        }
 
-            response.setStatus(200);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("utf-8");
-            PrintWriter printWriter = response.getWriter();
-            printWriter.print(objectMapper.writeValueAsString(result));
+        // 跨域
+        response.addHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.addHeader("Access-Control-Allow-Credentials", "true");
+
+        response.setStatus(200);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("utf-8");
+
+        try (PrintWriter printWriter = response.getWriter()) {
+            printWriter.print(json);
             printWriter.flush();
-            printWriter.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("返回异常提示时异常", e);
         }
     }
 
     private Map<String, Object> getResultMap(HttpServletRequest request) {
         HttpStatus status = getStatus(request);
-        ResponseResult<Void> result = ResponseResult.errorResult(status == HttpStatus.NOT_FOUND ? UserOpCodeEnum.NOT_FOUND : UserOpCodeEnum.SERVER_ERROR);
+        UserOpCodeEnum userOpCode;
+        if (status == HttpStatus.NOT_FOUND) {
+            userOpCode = UserOpCodeEnum.NOT_FOUND;
+        } else {
+            userOpCode = UserOpCodeEnum.BAD_ACCESS;
+        }
+
+        ResponseResult<Void> result = ResponseResult.errorResult(userOpCode);
         return BeanUtils.toMap(result);
     }
 }

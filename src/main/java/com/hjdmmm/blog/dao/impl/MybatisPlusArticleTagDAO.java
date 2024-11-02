@@ -5,26 +5,35 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hjdmmm.blog.dao.ArticleTagDAO;
 import com.hjdmmm.blog.dao.impl.mapper.ArticleTagMapper;
 import com.hjdmmm.blog.domain.entity.ArticleTag;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
-public class MybatisPlusArticleTagDAO extends ServiceImpl<ArticleTagMapper, ArticleTag> implements ArticleTagDAO {
+public class MybatisPlusArticleTagDAO implements ArticleTagDAO {
+    private final MybatisPlusServiceImpl mybatisPlusService;
+
+    public MybatisPlusArticleTagDAO(MybatisPlusServiceImpl mybatisPlusService) {
+        this.mybatisPlusService = mybatisPlusService;
+    }
+
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void insert(List<ArticleTag> list) {
-        saveBatch(list);
+        mybatisPlusService.saveBatch(list);
     }
 
     @Override
     public void deleteByArticleId(long articleId) {
-        remove(new LambdaQueryWrapper<ArticleTag>().eq(ArticleTag::getArticleId, articleId));
+        mybatisPlusService.remove(new LambdaQueryWrapper<ArticleTag>().eq(ArticleTag::getArticleId, articleId));
     }
 
     @Override
     public List<ArticleTag> selectByArticleId(long articleId) {
-        return list(new LambdaQueryWrapper<ArticleTag>().eq(ArticleTag::getArticleId, articleId));
+        return mybatisPlusService.list(new LambdaQueryWrapper<ArticleTag>().eq(ArticleTag::getArticleId, articleId));
+    }
+
+    @Component
+    public static class MybatisPlusServiceImpl extends ServiceImpl<ArticleTagMapper, ArticleTag> {
     }
 }

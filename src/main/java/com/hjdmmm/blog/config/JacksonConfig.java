@@ -52,6 +52,7 @@ public class JacksonConfig {
                 // 大数字转为String，防止精度丢失
                 .serializerByType(BigInteger.class, ToStringSerializer.instance)
                 .serializerByType(Long.class, ToStringSerializer.instance)
-                .serializerByType(Long.TYPE, ToStringSerializer.instance);
+                .serializerByType(Long.TYPE, ToStringSerializer.instance)
+                ;
     }
 }

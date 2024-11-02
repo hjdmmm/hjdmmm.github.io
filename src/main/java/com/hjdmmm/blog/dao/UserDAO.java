@@ -21,5 +21,5 @@ public interface UserDAO {
 
     PageVO<User> pageSelect(int pageNum, int pageSize, String userName, Integer type, Integer status);
 
-    long countByUserName(String userName);
+    long countByUserNameForUpdate(String userName);
 }

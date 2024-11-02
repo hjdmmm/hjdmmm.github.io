@@ -6,7 +6,6 @@ import com.hjdmmm.blog.dao.LinkDAO;
 import com.hjdmmm.blog.dao.impl.mapper.LinkMapper;
 import com.hjdmmm.blog.domain.entity.Link;
 import com.hjdmmm.blog.domain.vo.PageVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -16,8 +15,11 @@ import java.util.Objects;
 
 @Repository
 public class MybatisPlusLinkDAO implements LinkDAO {
-    @Autowired
-    private MybatisPlusServiceImpl mybatisPlusService;
+    private final MybatisPlusServiceImpl mybatisPlusService;
+
+    public MybatisPlusLinkDAO(MybatisPlusServiceImpl mybatisPlusService) {
+        this.mybatisPlusService = mybatisPlusService;
+    }
 
     @Override
     public void insert(Link link) {

@@ -4,10 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@NotNull
 public class EditUserModel {
+    @NotNull
+    @Min(1)
     private Long id;
     private String userName;
     private String nickName;

@@ -6,7 +6,6 @@ import com.hjdmmm.blog.dao.TagDAO;
 import com.hjdmmm.blog.dao.impl.mapper.TagMapper;
 import com.hjdmmm.blog.domain.entity.Tag;
 import com.hjdmmm.blog.domain.vo.PageVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -15,8 +14,11 @@ import java.util.List;
 
 @Repository
 public class MybatisPlusTagDAO implements TagDAO {
-    @Autowired
-    private MybatisPlusServiceImpl mybatisPlusService;
+    private final MybatisPlusServiceImpl mybatisPlusService;
+
+    public MybatisPlusTagDAO(MybatisPlusServiceImpl mybatisPlusService) {
+        this.mybatisPlusService = mybatisPlusService;
+    }
 
     @Override
     public void insert(Tag tag) {

@@ -17,8 +17,7 @@ import java.util.Optional;
 
 @RestControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler {
-
+public class ControllerExceptionHandler {
     @ExceptionHandler(UserOpException.class)
     public ResponseResult<Void> userOpExceptionHandler(UserOpException e) {
         log.warn("用户操作异常", e);

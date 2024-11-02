@@ -6,15 +6,17 @@ import com.hjdmmm.blog.dao.AttachmentDAO;
 import com.hjdmmm.blog.dao.impl.mapper.AttachmentMapper;
 import com.hjdmmm.blog.domain.entity.Attachment;
 import com.hjdmmm.blog.domain.vo.PageVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 @Repository
 public class MybatisPlusAttachmentDAO implements AttachmentDAO {
-    @Autowired
-    private MybatisPlusAttachmentDAO.MybatisPlusServiceImpl mybatisPlusService;
+    private final MybatisPlusServiceImpl mybatisPlusService;
+
+    public MybatisPlusAttachmentDAO(MybatisPlusServiceImpl mybatisPlusService) {
+        this.mybatisPlusService = mybatisPlusService;
+    }
 
     @Override
     public void insert(Attachment attachment) {

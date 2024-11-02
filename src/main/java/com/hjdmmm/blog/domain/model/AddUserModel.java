@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -14,6 +15,7 @@ public class AddUserModel {
     @NotNull
     private String userName;
     private String nickName;
+    @NotEmpty
     private String password;
     private Integer type;
     private Integer status;

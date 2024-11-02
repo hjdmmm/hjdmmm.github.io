@@ -6,7 +6,6 @@ import com.hjdmmm.blog.dao.CommentDAO;
 import com.hjdmmm.blog.dao.impl.mapper.CommentMapper;
 import com.hjdmmm.blog.domain.entity.Comment;
 import com.hjdmmm.blog.domain.vo.PageVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -15,8 +14,11 @@ import java.util.List;
 
 @Repository
 public class MybatisPlusCommentDAO implements CommentDAO {
-    @Autowired
-    private MybatisPlusServiceImpl mybatisPlusService;
+    private final MybatisPlusServiceImpl mybatisPlusService;
+
+    public MybatisPlusCommentDAO(MybatisPlusServiceImpl mybatisPlusService) {
+        this.mybatisPlusService = mybatisPlusService;
+    }
 
     @Override
     public void insert(Comment comment) {

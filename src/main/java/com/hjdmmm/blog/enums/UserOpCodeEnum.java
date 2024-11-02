@@ -10,6 +10,7 @@ public enum UserOpCodeEnum {
     BAD_TOKEN(405, "登录状态错误"),
     NEED_ANONYMOUS(406, "需要匿名用户"),
     IP_NOT_FOUND(407, "不能获取到用户IP"),
+    BAD_ACCESS(408, "访问不存在的内容"),
     SERVER_ERROR(500, "服务器错误"),
     USERNAME_EXIST(501, "用户名已存在"),
     EMAIL_EXIST(502, "邮箱已存在"),

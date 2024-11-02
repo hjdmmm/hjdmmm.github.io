@@ -1,13 +1,14 @@
 package com.hjdmmm.blog.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hjdmmm.blog.enums.UserOpCodeEnum;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Data
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
+@Setter(AccessLevel.PRIVATE)
 public class ResponseResult<T> {
     private int code;
     private String msg;

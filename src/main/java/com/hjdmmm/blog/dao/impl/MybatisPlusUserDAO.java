@@ -6,7 +6,6 @@ import com.hjdmmm.blog.dao.UserDAO;
 import com.hjdmmm.blog.dao.impl.mapper.UserMapper;
 import com.hjdmmm.blog.domain.entity.User;
 import com.hjdmmm.blog.domain.vo.PageVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -17,8 +16,11 @@ import java.util.Objects;
 
 @Repository
 public class MybatisPlusUserDAO implements UserDAO {
-    @Autowired
-    private MybatisPlusServiceImpl mybatisPlusService;
+    private final MybatisPlusServiceImpl mybatisPlusService;
+
+    public MybatisPlusUserDAO(MybatisPlusServiceImpl mybatisPlusService) {
+        this.mybatisPlusService = mybatisPlusService;
+    }
 
     @Override
     public void insert(User user) {
@@ -62,9 +64,10 @@ public class MybatisPlusUserDAO implements UserDAO {
     }
 
     @Override
-    public long countByUserName(String userName) {
+    public long countByUserNameForUpdate(String userName) {
         return mybatisPlusService.lambdaQuery()
                 .eq(User::getUserName, userName)
+                .last("for update")
                 .count();
     }
 
