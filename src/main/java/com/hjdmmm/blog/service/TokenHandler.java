@@ -1,9 +1,9 @@
 package com.hjdmmm.blog.service;
 
 import com.hjdmmm.blog.exception.BadTokenException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.OptionalLong;
 
 public interface TokenHandler {

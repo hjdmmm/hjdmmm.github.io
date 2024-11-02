@@ -8,14 +8,14 @@ import com.hjdmmm.blog.enums.UserOpCodeEnum;
 import com.hjdmmm.blog.exception.IllegalArticleCommentException;
 import com.hjdmmm.blog.exception.UserOpException;
 import com.hjdmmm.blog.service.CommentService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @RestController

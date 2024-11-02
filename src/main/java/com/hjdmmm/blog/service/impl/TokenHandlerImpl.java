@@ -7,11 +7,11 @@ import com.hjdmmm.blog.exception.BadTokenException;
 import com.hjdmmm.blog.exception.ServiceException;
 import com.hjdmmm.blog.exception.UserOpException;
 import com.hjdmmm.blog.service.TokenHandler;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.*;
-import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.Key;

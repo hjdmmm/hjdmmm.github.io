@@ -2,6 +2,7 @@ package com.hjdmmm.blog.context.impl;
 
 import com.hjdmmm.blog.annotation.Auth;
 import com.hjdmmm.blog.context.PathAuthProvider;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -9,7 +10,6 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerMapping;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Component
@@ -41,11 +41,9 @@ public class PathAuthProviderImpl implements PathAuthProvider {
             }
 
             Object handlerObject = handler.getHandler();
-            if (!(handlerObject instanceof HandlerMethod)) {
+            if (!(handlerObject instanceof HandlerMethod handlerMethod)) {
                 continue;
             }
-
-            HandlerMethod handlerMethod = (HandlerMethod) handlerObject;
 
             Auth methodAuth = AnnotatedElementUtils.findMergedAnnotation(handlerMethod.getMethod(), Auth.class);
             if (methodAuth != null) {
