@@ -90,6 +90,7 @@
         <div class="right-side">
             <h1>分类</h1>
             <ul id="category-list">
+                <li onclick="changeCategoryId(null)">全部</li>
             </ul>
         </div>
     </div>
@@ -108,7 +109,7 @@
 <script src="../js/url.js" type="text/javascript"></script>
 <script>
     let pageNum = 1;
-    let categoryId = -1;
+    let categoryId = null;
 
     const showArticleList = function (page) {
         const moreArticlesEle = document.getElementById("more-articles");
@@ -140,9 +141,11 @@
     }
 
     const getMoreArticles = function () {
-        const articleListQuery = {
-            'pageNum': pageNum,
-            'categoryId': categoryId
+        let articleListQuery = {
+            'pageNum': pageNum
+        }
+        if (categoryId !== null) {
+            articleListQuery['categoryId'] = categoryId;
         }
         ajax.get("article/list", articleListQuery, showArticleList);
     }
@@ -163,9 +166,6 @@
 
     window.onload = function () {
         categoryId = getUrlParam(window.location.search, "id");
-        if (categoryId == null) {
-            categoryId = -1;
-        }
         ajax.get("category/list", null, function (categoryList) {
             const categoryListEle = document.getElementById("category-list");
             for (let category of categoryList) {
