@@ -8,11 +8,11 @@ import com.hjdmmm.blog.domain.vo.PageVO;
 import com.hjdmmm.blog.enums.UserOpCodeEnum;
 import com.hjdmmm.blog.exception.UserOpException;
 import com.hjdmmm.blog.service.ArticleService;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 

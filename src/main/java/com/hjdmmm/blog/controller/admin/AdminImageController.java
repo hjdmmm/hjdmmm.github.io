@@ -10,14 +10,14 @@ import com.hjdmmm.blog.enums.UserOpCodeEnum;
 import com.hjdmmm.blog.exception.FileHasVirusException;
 import com.hjdmmm.blog.exception.UserOpException;
 import com.hjdmmm.blog.service.AttachmentService;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @RestController

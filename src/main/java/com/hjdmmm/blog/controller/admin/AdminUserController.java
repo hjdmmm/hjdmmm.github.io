@@ -13,11 +13,11 @@ import com.hjdmmm.blog.enums.UserOpCodeEnum;
 import com.hjdmmm.blog.exception.UserNameExistException;
 import com.hjdmmm.blog.exception.UserOpException;
 import com.hjdmmm.blog.service.UserService;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @RestController

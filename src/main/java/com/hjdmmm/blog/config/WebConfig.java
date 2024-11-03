@@ -1,6 +1,5 @@
 package com.hjdmmm.blog.config;
 
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +12,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.time.Duration;
 
 @Configuration
-@Setter
 public class WebConfig implements WebMvcConfigurer {
     private static final Duration REST_TEMPLATE_READ_TIMEOUT = Duration.ofSeconds(10);
     private static final Duration REST_TEMPLATE_CONNECT_TIMEOUT = Duration.ofSeconds(15);
