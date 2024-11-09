@@ -33,7 +33,7 @@
   const submit = function () {
     const name = document.getElementById("name").value;
     const description = document.getElementById("description").value;
-    const status = getSelectValue(document.getElementById("status"));
+    const status = parseInt(getSelectValue(document.getElementById("status")));
     const param = {
       'id': id,
       'name': name,
