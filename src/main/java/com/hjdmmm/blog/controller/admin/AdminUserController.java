@@ -34,7 +34,7 @@ public class AdminUserController {
     @PostMapping("")
     public ResponseResult<Void> add(@RequestBody AddUserModel model) {
         try {
-            userService.add(model.getUserName(), model.getNickName(), model.getPassword(), model.getType(), model.getStatus());
+            userService.add(model.userName(), model.nickName(), model.password(), model.type(), model.status());
         } catch (UserNameExistException e) {
             throw new UserOpException(UserOpCodeEnum.USERNAME_EXIST);
         }
@@ -51,7 +51,7 @@ public class AdminUserController {
     @PutMapping("")
     public ResponseResult<Void> edit(@RequestBody EditUserModel model) {
         try {
-            userService.edit(model.getId(), model.getUserName(), model.getNickName(), model.getPassword(), model.getType(), model.getStatus());
+            userService.edit(model.id(), model.userName(), model.nickName(), model.password(), model.type(), model.status());
         } catch (UserNameExistException e) {
             throw new UserOpException(UserOpCodeEnum.USERNAME_EXIST);
         }
@@ -61,7 +61,7 @@ public class AdminUserController {
 
     @PutMapping("/status")
     public ResponseResult<Void> changeStatus(@RequestBody ChangeStatusModel model) {
-        userService.changeStatus(model.getId(), model.getStatus());
+        userService.changeStatus(model.id(), model.status());
         return ResponseResult.okResult();
     }
 

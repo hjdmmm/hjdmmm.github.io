@@ -2,23 +2,16 @@ package com.hjdmmm.blog.domain.model;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @NotNull
-public class EditUserModel {
-    @NotNull
-    @Min(1)
-    private Long id;
-    private String userName;
-    private String nickName;
-    private String password;
-    private Integer type;
-    private Integer status;
-
-
+public record EditUserModel(
+        @NotNull
+        @Min(1)
+        Long id,
+        String userName,
+        String nickName,
+        String password,
+        Integer type,
+        Integer status
+) {
 }

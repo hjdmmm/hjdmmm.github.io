@@ -51,6 +51,36 @@ public class CommentServiceImpl implements CommentService {
         return user.getNickName();
     }
 
+    private static BlogCommentVO buildCommentVO(Comment comment, List<Comment> childrenComments, List<User> users) {
+        BlogCommentVO blogCommentVO = BeanUtils.copyBean(comment, BlogCommentVO.class);
+
+        User user = users.stream()
+                .filter(e -> e.getId().equals(comment.getCreateBy()))
+                .findFirst()
+                .orElse(null);
+        blogCommentVO.setNickName(getNickName(user));
+
+        if (!Long.valueOf(Comment.ROOT_PID).equals(blogCommentVO.getPid())) {
+            User toCommentUser = users.stream()
+                    .filter(e -> e.getId().equals(comment.getToCommentUserId()))
+                    .findFirst()
+                    .orElse(null);
+            blogCommentVO.setToCommentUserNickName(getNickName(toCommentUser));
+        }
+
+        if (childrenComments == null) {
+            return blogCommentVO;
+        }
+
+        List<BlogCommentVO> children = childrenComments.stream()
+                .filter(e -> comment.getId().equals(e.getPid()))
+                .map(e -> buildCommentVO(e, null, users))
+                .collect(Collectors.toList());
+        blogCommentVO.setChildren(children);
+
+        return blogCommentVO;
+    }
+
     @Override
     public void add(Comment comment) throws IllegalArticleCommentException {
         if (Integer.valueOf(Comment.ARTICLE_COMMENT).equals(comment.getType())) {
@@ -125,42 +155,12 @@ public class CommentServiceImpl implements CommentService {
         return newValue <= maxCommentNum;
     }
 
-    private static BlogCommentVO buildCommentVO(Comment comment, List<Comment> childrenComments, List<User> users) {
-        BlogCommentVO blogCommentVO = BeanUtils.copyBean(comment, BlogCommentVO.class);
-
-        User user = users.stream()
-                .filter(e -> e.getId().equals(comment.getCreateBy()))
-                .findFirst()
-                .orElse(null);
-        blogCommentVO.setNickName(getNickName(user));
-
-        if (!Long.valueOf(Comment.ROOT_PID).equals(blogCommentVO.getPid())) {
-            User toCommentUser = users.stream()
-                    .filter(e -> e.getId().equals(comment.getToCommentUserId()))
-                    .findFirst()
-                    .orElse(null);
-            blogCommentVO.setToCommentUserNickName(getNickName(toCommentUser));
-        }
-
-        if (childrenComments == null) {
-            return blogCommentVO;
-        }
-
-        List<BlogCommentVO> children = childrenComments.stream()
-                .filter(e -> comment.getId().equals(e.getPid()))
-                .map(e -> buildCommentVO(e, null, users))
-                .collect(Collectors.toList());
-        blogCommentVO.setChildren(children);
-
-        return blogCommentVO;
-    }
-
     private void deleteExpiredIps() {
         Instant now = Instant.now();
         List<String> list = ip2CommentInstantMap.entrySet().stream()
-                .filter(entry -> Duration.between(entry.getValue(), now).compareTo(commentConfig.getCommentIpExpireDuration()) > 0)
+                .filter(entry -> Duration.between(entry.getValue(), now).compareTo(commentConfig.getExpireSeconds()) > 0)
                 .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+                .toList();
         for (String key : list) {
             ip2CommentCountMap.remove(key);
             ip2CommentInstantMap.remove(key);

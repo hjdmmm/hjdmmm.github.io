@@ -1,12 +1,14 @@
 package com.hjdmmm.blog.context;
 
 public interface UserIdHolder {
-
-    long get();
+    Long get();
 
     boolean exist();
 
-    void set(long userId);
+    Session newSession(long userId);
 
-    void clear();
+    interface Session extends AutoCloseable {
+        @Override
+        void close();
+    }
 }

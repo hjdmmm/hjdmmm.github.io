@@ -52,7 +52,7 @@ public class AdminLinkController {
 
     @PutMapping("/status")
     public ResponseResult<Void> changeStatus(@RequestBody ChangeStatusModel model) {
-        linkService.changeStatus(model.getId(), model.getStatus());
+        linkService.changeStatus(model.id(), model.status());
         return ResponseResult.okResult();
     }
 

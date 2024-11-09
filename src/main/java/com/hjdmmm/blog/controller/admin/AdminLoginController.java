@@ -28,10 +28,10 @@ public class AdminLoginController {
     @PostMapping("/system/login")
     @Auth(AuthTypeEnum.ANONYMOUS)
     public ResponseResult<LoginVO> login(@RequestBody AdminLoginUserModel adminLoginUserModel, @RequestHeader HttpHeaders httpHeaders) {
-        if (!StringUtils.hasText(adminLoginUserModel.getUserName())) {
+        if (!StringUtils.hasText(adminLoginUserModel.userName())) {
             throw new UserOpException(UserOpCodeEnum.REQUIRE_USERNAME);
         }
-        LoginVO loginVO = loginService.login(adminLoginUserModel.getUserName(), adminLoginUserModel.getPassword(), httpHeaders);
+        LoginVO loginVO = loginService.login(adminLoginUserModel.userName(), adminLoginUserModel.password(), httpHeaders);
         return ResponseResult.okResult(loginVO);
     }
 

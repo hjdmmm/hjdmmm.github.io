@@ -1,14 +1,17 @@
 package com.hjdmmm.blog.config;
 
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
 @ConfigurationProperties("virus-total")
-@Data
+@Getter
 public class VirusTotalConfig {
-    private String key;
+    private final String key;
 
-    private String url;
+    private final String url;
+
+    public VirusTotalConfig(String key, String url) {
+        this.key = key;
+        this.url = url;
+    }
 }

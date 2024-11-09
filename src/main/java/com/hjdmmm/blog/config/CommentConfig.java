@@ -1,34 +1,34 @@
 package com.hjdmmm.blog.config;
 
-import lombok.Setter;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.convert.DurationUnit;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
-@Configuration
 @ConfigurationProperties("comment")
-@Setter
+@Getter
 public class CommentConfig {
     private static final Duration DEFAULT_COMMENT_IP_EXPIRE_DURATION = Duration.ofHours(2);
     private static final int DEFAULT_MAX_COMMENT_NUM = 100;
 
-    private long expireSeconds = 0L;
-    private int maxCommentNum = -1;
+    @DurationUnit(ChronoUnit.SECONDS)
+    private final Duration expireSeconds;
 
-    public Duration getCommentIpExpireDuration() {
-        if (expireSeconds <= 0L) {
-            return DEFAULT_COMMENT_IP_EXPIRE_DURATION;
+    private final int maxCommentNum;
+
+    public CommentConfig(Duration expireSeconds, Integer maxCommentNum) {
+        if (expireSeconds == null || expireSeconds.isZero() || expireSeconds.isNegative()) {
+            this.expireSeconds = DEFAULT_COMMENT_IP_EXPIRE_DURATION;
+        } else {
+            this.expireSeconds = expireSeconds;
         }
 
-        return Duration.ofSeconds(expireSeconds);
-    }
-
-    public int getMaxCommentNum() {
-        if (maxCommentNum < 0) {
-            return DEFAULT_MAX_COMMENT_NUM;
+        if (maxCommentNum == null || maxCommentNum < 0) {
+            this.maxCommentNum = DEFAULT_MAX_COMMENT_NUM;
+        } else {
+            this.maxCommentNum = maxCommentNum;
         }
-
-        return maxCommentNum;
     }
 }

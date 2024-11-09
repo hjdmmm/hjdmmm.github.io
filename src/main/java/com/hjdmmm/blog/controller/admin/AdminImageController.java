@@ -39,7 +39,7 @@ public class AdminImageController {
         }
 
         Optional<MediaType> mediaType = MediaTypeFactory.getMediaType(img.getOriginalFilename());
-        if (!mediaType.isPresent() || !Attachment.IMAGE_MEDIA_TYPE.includes(mediaType.get())) {
+        if (mediaType.isEmpty() || !Attachment.IMAGE_MEDIA_TYPE.includes(mediaType.get())) {
             throw new UserOpException(UserOpCodeEnum.FILE_NOT_SUPPORT);
         }
 

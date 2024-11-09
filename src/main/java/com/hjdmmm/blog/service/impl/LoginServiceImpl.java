@@ -51,7 +51,7 @@ public class LoginServiceImpl implements LoginService {
 
         Long userId = user.getId();
         String token = tokenHandler.createToken(String.valueOf(userId), httpHeaders);
-        return new LoginVO(token, (int) loginConfig.getLoginExpireTimeout().getSeconds());
+        return new LoginVO(token, (int) loginConfig.getExpireSeconds().getSeconds());
     }
 
     @Override

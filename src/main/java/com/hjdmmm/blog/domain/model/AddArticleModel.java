@@ -3,26 +3,20 @@ package com.hjdmmm.blog.domain.model;
 import com.hjdmmm.blog.domain.entity.Article;
 import com.hjdmmm.blog.util.BooleanUtils;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @NotNull
-public class AddArticleModel {
-    private String title;
-    private Boolean top;
-    private Boolean comment;
-    private Boolean draft;
-    private String content;
-    private Long categoryId;
-    private String summary;
-    private List<Long> tags;
-
+public record AddArticleModel(
+        String title,
+        Boolean top,
+        Boolean comment,
+        Boolean draft,
+        String content,
+        Long categoryId,
+        String summary,
+        List<Long> tags
+) {
     public Article toArticle() {
         Article article = new Article();
         article.setTitle(title);

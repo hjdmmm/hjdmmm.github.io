@@ -69,17 +69,15 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (!userId.isPresent()) {
+        if (userId.isEmpty()) {
             log.warn("{} 提供了过时的token", request.getRemoteAddr());
             ResponseResult<Void> result = ResponseResult.errorResult(UserOpCodeEnum.BAD_TOKEN);
             nonControllerErrorController.respondExceptionTip(request, response, result);
             return;
         }
 
-        userIdHolder.set(userId.getAsLong());
-
-        filterChain.doFilter(request, response);
-
-        userIdHolder.clear();
+        try (UserIdHolder.Session ignored = userIdHolder.newSession(userId.getAsLong())) {
+            filterChain.doFilter(request, response);
+        }
     }
 }

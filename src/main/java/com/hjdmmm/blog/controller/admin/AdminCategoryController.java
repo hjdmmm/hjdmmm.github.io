@@ -54,7 +54,7 @@ public class AdminCategoryController {
 
     @PutMapping("/status")
     public ResponseResult<Void> changeStatus(@RequestBody ChangeStatusModel model) {
-        categoryService.changeStatus(model.getId(), model.getStatus());
+        categoryService.changeStatus(model.id(), model.status());
         return ResponseResult.okResult();
     }
 

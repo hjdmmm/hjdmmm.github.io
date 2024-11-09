@@ -32,7 +32,7 @@ public class AdminArticleController {
 
     @PostMapping("")
     public ResponseResult<Void> add(@RequestBody AddArticleModel addArticleModel) {
-        articleService.add(addArticleModel.toArticle(), CollectionUtils.emptyIfNull(addArticleModel.getTags()));
+        articleService.add(addArticleModel.toArticle(), CollectionUtils.emptyIfNull(addArticleModel.tags()));
         return ResponseResult.okResult();
     }
 
@@ -44,7 +44,7 @@ public class AdminArticleController {
 
     @PutMapping("")
     public ResponseResult<Void> edit(@RequestBody EditArticleModel editArticleModel) {
-        articleService.edit(editArticleModel.toArticle(), CollectionUtils.emptyIfNull(editArticleModel.getTags()));
+        articleService.edit(editArticleModel.toArticle(), CollectionUtils.emptyIfNull(editArticleModel.tags()));
         return ResponseResult.okResult();
     }
 

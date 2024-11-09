@@ -117,7 +117,7 @@ public class TokenHandlerImpl implements TokenHandler {
             throw new BadTokenException(String.format("解密后的Token：%s时间戳格式错误", token));
         }
 
-        if (loginInstant.plus(loginConfig.getLoginExpireTimeout()).isBefore(Instant.now())) {
+        if (loginInstant.plus(loginConfig.getExpireSeconds()).isBefore(Instant.now())) {
             return OptionalLong.empty();
         }
 

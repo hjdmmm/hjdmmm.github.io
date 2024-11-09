@@ -79,14 +79,12 @@ public class AttachmentServiceImpl implements AttachmentService {
                 hasVirus = virusScanner.scan(localFile);
             } catch (VirusScannerException e) {
                 switch (e.errorType) {
-                    case NO_SCANNER_CONFIG:
-                        throw new ServiceException(ServiceCodeEnum.SERVER_ERROR, e);
-                    case THIRD_PARTY_RESULT_ERROR:
-                        throw new ServiceException(ServiceCodeEnum.THIRD_PARTY_RESULT_ERROR, e);
-                    case THIRD_PARTY_TIMEOUT:
-                        throw new ServiceException(ServiceCodeEnum.THIRD_PARTY_TIMEOUT_ERROR, e);
-                    default:
-                        throw new ServiceException(ServiceCodeEnum.THIRD_PARTY_ERROR, e);
+                    case NO_SCANNER_CONFIG -> throw new ServiceException(ServiceCodeEnum.SERVER_ERROR, e);
+                    case THIRD_PARTY_RESULT_ERROR ->
+                            throw new ServiceException(ServiceCodeEnum.THIRD_PARTY_RESULT_ERROR, e);
+                    case THIRD_PARTY_TIMEOUT ->
+                            throw new ServiceException(ServiceCodeEnum.THIRD_PARTY_TIMEOUT_ERROR, e);
+                    default -> throw new ServiceException(ServiceCodeEnum.THIRD_PARTY_ERROR, e);
                 }
             }
 

@@ -34,12 +34,9 @@ public class ImageController {
             previewImageVO = attachmentService.previewImage(attachmentId);
         } catch (PreviewImageException e) {
             switch (e.errorType) {
-                case FILE_NOT_EXIST:
-                    throw new UserOpException(UserOpCodeEnum.FILE_NOT_EXIST);
-                case FILE_NOT_IMAGE:
-                    throw new UserOpException(UserOpCodeEnum.FILE_NOT_SUPPORT);
-                default:
-                    throw new UserOpException(UserOpCodeEnum.FILE_ERROR);
+                case FILE_NOT_EXIST -> throw new UserOpException(UserOpCodeEnum.FILE_NOT_EXIST);
+                case FILE_NOT_IMAGE -> throw new UserOpException(UserOpCodeEnum.FILE_NOT_SUPPORT);
+                default -> throw new UserOpException(UserOpCodeEnum.FILE_ERROR);
             }
         }
 

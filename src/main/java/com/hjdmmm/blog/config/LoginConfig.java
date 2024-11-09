@@ -1,24 +1,25 @@
 package com.hjdmmm.blog.config;
 
-import lombok.Setter;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.convert.DurationUnit;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
-@Configuration
 @ConfigurationProperties("login")
-@Setter
+@Getter
 public class LoginConfig {
     private static final Duration DEFAULT_LOGIN_EXPIRE_TIMEOUT = Duration.ofHours(1);
 
-    private long expireSeconds = 0L;
+    @DurationUnit(ChronoUnit.SECONDS)
+    private final Duration expireSeconds;
 
-    public Duration getLoginExpireTimeout() {
-        if (expireSeconds <= 0L) {
-            return DEFAULT_LOGIN_EXPIRE_TIMEOUT;
+    public LoginConfig(Duration expireSeconds) {
+        if (expireSeconds == null || expireSeconds.isZero() || expireSeconds.isNegative()) {
+            this.expireSeconds = DEFAULT_LOGIN_EXPIRE_TIMEOUT;
+        } else {
+            this.expireSeconds = expireSeconds;
         }
-
-        return Duration.ofSeconds(expireSeconds);
     }
 }
