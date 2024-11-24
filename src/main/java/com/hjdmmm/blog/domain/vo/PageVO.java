@@ -21,7 +21,6 @@ public class PageVO<T> {
     @SuppressWarnings("unchecked")
     public <E> PageVO<E> convertType(List<E> newRows) {
         PageVO<E> pageVO = (PageVO<E>) this;
-        pageVO.total = newRows.size();
         pageVO.rows = newRows;
         return pageVO;
     }
