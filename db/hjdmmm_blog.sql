@@ -101,6 +101,24 @@ CREATE TABLE `comment`
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
+-- Table structure for drawio
+-- ----------------------------
+DROP TABLE IF EXISTS `drawio`;
+CREATE TABLE `drawio`
+(
+    `id`                    bigint(20) NOT NULL AUTO_INCREMENT,
+    `name`                  varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+    `source_attachment_id`  bigint(20) NOT NULL,
+    `picture_attachment_id` bigint(20) NOT NULL,
+    `create_by`             bigint(20) NULL DEFAULT NULL,
+    `create_time`           datetime NULL DEFAULT NULL,
+    `update_by`             bigint(20) NULL DEFAULT NULL,
+    `update_time`           datetime NULL DEFAULT NULL,
+    `del_flag`              tinyint(1) NULL DEFAULT 0 COMMENT '删除标志（0代表未删除，1代表已删除）',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
 -- Table structure for link
 -- ----------------------------
 DROP TABLE IF EXISTS `link`;

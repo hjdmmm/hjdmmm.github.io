@@ -33,7 +33,7 @@ public class AdminImageController {
     }
 
     @PostMapping(value = "")
-    public ResponseResult<String> upload(@NotNull MultipartFile img) {
+    public ResponseResult<Long> upload(@NotNull MultipartFile img) {
         if (img.isEmpty()) {
             throw new UserOpException(UserOpCodeEnum.FILE_ERROR, "图片不能为空");
         }
@@ -43,7 +43,7 @@ public class AdminImageController {
             throw new UserOpException(UserOpCodeEnum.FILE_NOT_SUPPORT);
         }
 
-        String attachmentId;
+        long attachmentId;
         try {
             attachmentId = attachmentService.upload(img, false);
         } catch (FileHasVirusException e) {
@@ -61,7 +61,7 @@ public class AdminImageController {
 
     @GetMapping("/list")
     public ResponseResult<PageVO<ImageListVO>> list(Integer pageNum, Integer pageSize, String name) {
-        PageVO<ImageListVO> pageVO = attachmentService.list(
+        PageVO<ImageListVO> pageVO = attachmentService.listImages(
                 Optional.ofNullable(pageNum).orElse(1),
                 Optional.ofNullable(pageSize).orElse(10),
                 name);

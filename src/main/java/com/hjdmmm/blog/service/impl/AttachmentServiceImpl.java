@@ -16,6 +16,7 @@ import com.hjdmmm.blog.service.VirusScanner;
 import com.hjdmmm.blog.util.BeanUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.hjdmmm.blog.domain.entity.Attachment.IMAGE_MEDIA_TYPE;
+import static com.hjdmmm.blog.domain.entity.Attachment.IMAGE_MEDIA_TYPE_PREFIX;
 
 @Service
 @Slf4j
@@ -57,7 +59,7 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String upload(MultipartFile file, boolean scanVirus) throws FileHasVirusException {
+    public long upload(MultipartFile file, boolean scanVirus) throws FileHasVirusException {
         if (file == null || file.isEmpty()) {
             throw new ServiceException(ServiceCodeEnum.SERVER_FILE_ERROR, String.format("文件 %s 为空", file));
         }
@@ -67,6 +69,74 @@ public class AttachmentServiceImpl implements AttachmentService {
         attachment.setOriginalName(file.getOriginalFilename());
         attachment.setMimeType(file.getContentType());
         attachmentDAO.insert(attachment);
+        long id = attachment.getId();
+
+        updateNewFile(attachment, file, scanVirus);
+
+        return id;
+    }
+
+    @Override
+    public void delete(long id) {
+        attachmentDAO.delete(id);
+    }
+
+    @Override
+    public void replace(long sourceId, long destinationId) throws AttachmentNotExistException {
+        Attachment attachment = attachmentDAO.select(sourceId);
+
+        if (attachment == null) {
+            throw new AttachmentNotExistException("原文件不存在，id:" + sourceId);
+        }
+
+        attachment.setId(destinationId);
+        attachmentDAO.updateById(attachment);
+    }
+
+    @Override
+    public PageVO<ImageListVO> listImages(int pageNum, int pageSize, String name) {
+        PageVO<Attachment> attachmentPageVO = attachmentDAO.pageSelect(pageNum, pageSize, name, IMAGE_MEDIA_TYPE_PREFIX);
+
+        List<ImageListVO> imageListVOList = BeanUtils.copyBeanList(attachmentPageVO.getRows(), ImageListVO.class);
+        for (ImageListVO imageListVO : imageListVOList) {
+            File file = storageService.download(imageListVO.getUrl());
+            String originalBase64Image = null;
+            try {
+                originalBase64Image = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+            } catch (Exception e) {
+                log.error("服务器读取文件失败", e);
+            }
+
+            if (originalBase64Image != null) {
+                imageListVO.setThumbnail("data:" + imageListVO.getMimeType() + ";base64," + originalBase64Image);
+            }
+        }
+
+        return attachmentPageVO.convertType(imageListVOList);
+    }
+
+    @Override
+    public PreviewImageVO previewImage(long attachmentId) throws PreviewImageException {
+        Attachment attachment = attachmentDAO.select(attachmentId);
+        if (attachment == null) {
+            throw new PreviewImageException(PreviewImageErrorTypeEnum.FILE_NOT_EXIST);
+        }
+
+        MediaType mediaType = MediaType.parseMediaType(attachment.getMimeType());
+        if (!IMAGE_MEDIA_TYPE.includes(mediaType)) {
+            throw new PreviewImageException(PreviewImageErrorTypeEnum.FILE_NOT_IMAGE);
+        }
+
+        FileSystemResource resource = new FileSystemResource(storageService.download(attachment.getUrl()));
+        return new PreviewImageVO(mediaType, resource);
+    }
+
+    @Override
+    public Resource download(String url) {
+        return new FileSystemResource(storageService.download(url));
+    }
+
+    private void updateNewFile(Attachment attachment, MultipartFile file, boolean scanVirus) throws FileHasVirusException {
         long id = attachment.getId();
 
         // 暂存在服务器本地
@@ -105,56 +175,12 @@ public class AttachmentServiceImpl implements AttachmentService {
 
         // 实际存储
         String url = storageService.upload(localFile, id);
+
         try {
             attachmentDAO.update(id, url);
         } catch (Exception e) {
             throw new ServiceException(ServiceCodeEnum.SERVER_ERROR, "修改 attachment 的 url 时出错", e);
         }
-
-        return String.valueOf(id);
-    }
-
-    @Override
-    public void delete(long id) {
-        attachmentDAO.delete(id);
-    }
-
-    @Override
-    public PageVO<ImageListVO> list(int pageNum, int pageSize, String name) {
-        PageVO<Attachment> attachmentPageVO = attachmentDAO.pageSelect(pageNum, pageSize, name);
-
-        List<ImageListVO> imageListVOList = BeanUtils.copyBeanList(attachmentPageVO.getRows(), ImageListVO.class);
-        for (ImageListVO imageListVO : imageListVOList) {
-            File file = storageService.download(imageListVO.getUrl());
-            String originalBase64Image = null;
-            try {
-                originalBase64Image = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-            } catch (Exception e) {
-                log.error("服务器读取文件失败", e);
-            }
-
-            if (originalBase64Image != null) {
-                imageListVO.setThumbnail("data:" + imageListVO.getMimeType() + ";base64," + originalBase64Image);
-            }
-        }
-
-        return attachmentPageVO.convertType(imageListVOList);
-    }
-
-    @Override
-    public PreviewImageVO previewImage(long attachmentId) throws PreviewImageException {
-        Attachment attachment = attachmentDAO.select(attachmentId);
-        if (attachment == null) {
-            throw new PreviewImageException(PreviewImageErrorTypeEnum.FILE_NOT_EXIST);
-        }
-
-        MediaType mediaType = MediaType.parseMediaType(attachment.getMimeType());
-        if (!IMAGE_MEDIA_TYPE.includes(mediaType)) {
-            throw new PreviewImageException(PreviewImageErrorTypeEnum.FILE_NOT_IMAGE);
-        }
-
-        FileSystemResource resource = new FileSystemResource(storageService.download(attachment.getUrl()));
-        return new PreviewImageVO(mediaType, resource);
     }
 
     private File storeLocal(MultipartFile file, long id, LocalDateTime localDateTime) {

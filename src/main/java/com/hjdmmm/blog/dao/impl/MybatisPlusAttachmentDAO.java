@@ -34,14 +34,20 @@ public class MybatisPlusAttachmentDAO implements AttachmentDAO {
     }
 
     @Override
+    public void updateById(Attachment attachment) {
+        mybatisPlusService.updateById(attachment);
+    }
+
+    @Override
     public Attachment select(long id) {
         return mybatisPlusService.getById(id);
     }
 
     @Override
-    public PageVO<Attachment> pageSelect(int pageNum, int pageSize, String name) {
+    public PageVO<Attachment> pageSelect(int pageNum, int pageSize, String name, String mimeTypePrefix) {
         Page<Attachment> page = mybatisPlusService.lambdaQuery()
                 .like(StringUtils.hasText(name), Attachment::getOriginalName, name)
+                .likeRight(StringUtils.hasText(mimeTypePrefix), Attachment::getMimeType, mimeTypePrefix)
                 .page(new Page<>(pageNum, pageSize));
 
         return new PageVO<>(page.getRecords(), page.getTotal());

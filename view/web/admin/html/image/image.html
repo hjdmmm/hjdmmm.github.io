@@ -26,6 +26,7 @@
       <li><a href="../tag/tag.html">标签管理</a></li>
       <li><a href="../user/user.html">用户管理</a></li>
       <li><a href="./image.html">图片管理</a></li>
+      <li><a href="../drawio/drawio.html">drawio管理</a></li>
     </ul>
   </div>
   <div class="center">
@@ -125,7 +126,9 @@
 
       tdEles[5].innerHTML = '';
       const thumbnail = document.createElement("img");
-      thumbnail.src = image.thumbnail;
+      if (image.thumbnail != null) {
+        thumbnail.src = image.thumbnail;
+      }
       thumbnail.alt = "图片加载失败";
       tdEles[5].appendChild(thumbnail);
 

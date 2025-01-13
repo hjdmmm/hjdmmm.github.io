@@ -10,7 +10,9 @@ public interface AttachmentDAO {
 
     void update(long id, String url);
 
+    void updateById(Attachment attachment);
+
     Attachment select(long id);
 
-    PageVO<Attachment> pageSelect(int pageNum, int pageSize, String name);
+    PageVO<Attachment> pageSelect(int pageNum, int pageSize, String name, String mimeTypePrefix);
 }

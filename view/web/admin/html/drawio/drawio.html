@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>hjdmmm博客后台</title>
+  <link href="../../css/global.css" rel="stylesheet">
+  <link href="../../css/common-table.css" rel="stylesheet">
+  <style>
+    img {
+      max-width: 20%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="left-side">
+    <ul>
+      <li><a href="../article/write.html">写博文</a></li>
+      <li><a href="../article/article.html">文章管理</a></li>
+      <li><a href="../link/link.html">推荐网站管理</a></li>
+      <li><a href="../category/category.html">分类管理</a></li>
+      <li><a href="../tag/tag.html">标签管理</a></li>
+      <li><a href="../user/user.html">用户管理</a></li>
+      <li><a href="../image/image.html">图片管理</a></li>
+      <li><a href="./drawio.html">drawio管理</a></li>
+    </ul>
+  </div>
+  <div class="center">
+    <div class="inner-header">
+      <h1>drawio管理</h1>
+      <input type="button" value="退出" onclick="logout('../user/login.html');">
+    </div>
+    <div class="inner-center">
+      <div class="search">
+        <span class="search-tip">名称</span> <input class="search-text" id="name" type="text">
+        <input class="search-button" id="search" type="button" value="搜索">
+      </div>
+
+      <div>
+        <input type="button" id="add-button" class="add-button" value="点此新建" onclick="createNew()">
+      </div>
+
+      <div class="table">
+        <table>
+          <thead>
+          <tr>
+            <th>id</th>
+            <th>名称</th>
+            <th>创建时间</th>
+            <th>对应图片ID</th>
+            <th>缩略图</th>
+            <th>操作</th>
+          </tr>
+          </thead>
+          <tbody id="drawio-list">
+          </tbody>
+        </table>
+      </div>
+
+      <div class="page-board">
+        共<span id="total-num">0</span>条 10条/页
+        <input class="page-button" id="previous-page" onclick="pager.toPreviousPage();" type="button" value="&lt;">
+        <span id="show-page-num">
+        </span>
+        <input class="page-button" id="next-page" onclick="pager.toNextPage();" type="button" value="&gt;">
+        前往 <input class="page-num" id="selected-page-num" type="text"> 页
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+<script src="../../js/ajax.js"></script>
+<script src="../../js/page.js"></script>
+<script src="../../js/login.js"></script>
+<script>
+  const pageSize = 10;
+  let pager;
+
+  const onChangePageNum = function (e) {
+    const theEvent = window.event || e;
+    const code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+    if (code === 13) {
+      pager.toSelectedPageNum(this.value);
+    }
+  }
+
+  const showList = function (page) {
+    document.getElementById("total-num").innerText = page.total;
+    maxPageNum = Math.ceil(page.total / pageSize);
+    const showPageNumEle = document.getElementById("show-page-num");
+    showPageNumEle.innerHTML = '';
+    for (let currentPage = 1; currentPage <= maxPageNum; currentPage++) {
+      const pageNumEle = document.createElement("input");
+      pageNumEle.className = "page-button";
+      pageNumEle.type = "button";
+      pageNumEle.value = currentPage.toString();
+      const currentPageNum = currentPage;
+      pageNumEle.onclick = function () {
+        pager.toSelectedPageNum(currentPageNum);
+      }
+      showPageNumEle.appendChild(pageNumEle);
+    }
+
+    showTable(page.rows)
+  }
+
+  const showTable = function (list) {
+    const listEle = document.getElementById("drawio-list");
+    listEle.innerHTML = "";
+    for (let drawio of list) {
+      const id = drawio.id;
+      const elementNames = ["id", "name", "createTime", "pictureId", "thumbnail", "op"];
+      const tdEles = elementNames.map(elementName => {
+        const tdEle = document.createElement("td");
+        tdEle.innerText = drawio[elementName];
+        return tdEle;
+      });
+
+      tdEles[4].innerHTML = '';
+      const thumbnail = document.createElement("img");
+      thumbnail.src = drawio.thumbnail;
+      thumbnail.alt = "图片加载失败";
+      tdEles[4].appendChild(thumbnail);
+
+      {
+        tdEles[5].innerHTML = '';
+
+        const updateNameButton = document.createElement("input");
+        updateNameButton.type = "button";
+        updateNameButton.className = "table-button";
+        updateNameButton.value = "修改名称";
+        updateNameButton.onclick = function () {
+          window.location.href = "edit_drawio_name.html?id=" + id;
+        }
+        tdEles[5].appendChild(updateNameButton);
+
+        const updateButton = document.createElement("input");
+        updateButton.type = "button";
+        updateButton.className = "table-button";
+        updateButton.value = "修改";
+        updateButton.onclick = function () {
+          window.location.href = "../../lib/drawio-geek/index.html?id=" + id;
+        }
+        tdEles[5].appendChild(updateButton);
+
+        const removeButton = document.createElement("input");
+        removeButton.type = "button";
+        removeButton.className = "table-button";
+        removeButton.value = "删除";
+        removeButton.onclick = function () {
+          if (window.confirm("确认删除id为" + id + "的drawio吗？")) {
+            ajax.delete("admin/drawio/" + id, null, function () {
+              window.location.reload();
+            });
+          }
+        }
+        tdEles[5].appendChild(removeButton);
+      }
+
+      const trEle = document.createElement("tr");
+      for (let tdEle of tdEles) {
+        trEle.appendChild(tdEle);
+      }
+      listEle.appendChild(trEle);
+    }
+  }
+
+  const search = function () {
+    let name = document.getElementById("name").value;
+    name = name == null || name === "" ? null : name;
+    pager.changePageNum(1, new Map([
+      ['name', name],
+    ]));
+  }
+
+  const createNew = function () {
+    const name = window.prompt("请输入新文件名");
+    if (name == null) {
+      return;
+    }
+
+    window.location.href = "../../lib/drawio-geek/index.html?name=" + encodeURIComponent(name);
+  }
+
+  window.onload = function () {
+    if (!existToken()) {
+      window.location.href = "../user/login.html";
+    }
+
+    pager = new Pager(pageSize, "admin/drawio/list", showList)
+    pager.changePageNum(1);
+
+    document.getElementById("selected-page-num").onkeydown = onChangePageNum;
+
+    document.getElementById("search").onclick = search;
+  }
+</script>

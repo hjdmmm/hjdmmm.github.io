@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 public class Attachment {
 
     public static final MediaType IMAGE_MEDIA_TYPE = MediaType.parseMediaType("image/*");
+    public static final String IMAGE_MEDIA_TYPE_PREFIX = "image/";
 
     @TableId
     private Long id;
