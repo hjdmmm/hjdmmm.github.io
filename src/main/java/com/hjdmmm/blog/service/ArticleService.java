@@ -1,28 +1,37 @@
 package com.hjdmmm.blog.service;
 
-import com.hjdmmm.blog.domain.entity.Article;
-import com.hjdmmm.blog.domain.vo.*;
+import com.hjdmmm.blog.domain.dto.ArticleDTO;
+import com.hjdmmm.blog.domain.model.AddArticleModel;
+import com.hjdmmm.blog.domain.vo.ArticleDetailVO;
+import com.hjdmmm.blog.domain.vo.ArticleNodeVO;
+import com.hjdmmm.blog.domain.vo.PageVO;
 
 import java.util.List;
 
 public interface ArticleService {
-    void add(Article article, List<Long> tagList);
+    long add(AddArticleModel model, long operator) throws Exception;
 
-    void delete(long id);
+    void delete(long id, long modifier) throws Exception;
 
-    void edit(Article article, List<Long> tagList);
+    void updateTitle(long id, String title, long modifier) throws Exception;
 
-    ArticleVO get(long id);
+    void updateContent(long id, String content, long modifier) throws Exception;
 
-    PageVO<ArticleListVO> list(int pageNum, int pageSize, String title, String summary);
+    void updateParent(long id, Long parentId, long modifier) throws Exception;
 
-    BlogArticleDetailVO getArticleDetail(long id);
+    void updateTagIds(long id, List<Long> tagIds, long modifier) throws Exception;
 
-    PageVO<BlogArticleListVO> getBlogList(int pageNum, int pageSize, Long categoryId);
+    void increaseViewCount(long id) throws Exception;
 
-    List<BlogArticleVO> getHotArticleList();
+    List<Long> getHotArticleIds() throws Exception;
 
-    List<BlogArticleVO> getLatestArticleList();
+    List<Long> getLatestArticleIds() throws Exception;
 
-    void increaseViewCount(long id);
+    PageVO<Long> listCategoryArticleIds(int pageNum, int pageSize) throws Exception;
+
+    List<ArticleNodeVO> getArticleNodes(List<Long> articleIds, Long userId) throws Exception;
+
+    ArticleDetailVO getArticleDetail(long id, Long userId) throws Exception;
+
+    PageVO<ArticleDTO> list(int pageNum, int pageSize, String title, String summary) throws Exception;
 }

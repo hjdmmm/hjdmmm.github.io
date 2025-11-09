@@ -1,28 +1,36 @@
 package com.hjdmmm.blog.dao;
 
+import com.hjdmmm.blog.domain.dto.ArticleDTO;
+import com.hjdmmm.blog.domain.dto.ArticleDetailDTO;
 import com.hjdmmm.blog.domain.entity.Article;
 import com.hjdmmm.blog.domain.vo.PageVO;
 
 import java.util.List;
 
 public interface ArticleDAO {
-    void insert(Article article);
+    void insert(Article article) throws Exception;
 
-    void delete(long id);
+    void delete(long id) throws Exception;
 
-    void updateById(Article article);
+    void updateTitleById(long id, String title, long modifier) throws Exception;
 
-    void increaseViewCount(long id);
+    void updateContentById(long id, String content, long modifier) throws Exception;
 
-    Article select(long id);
+    void updateParentById(long id, long parentId, long modifier) throws Exception;
 
-    List<Article> selectNormal();
+    void updateTagIds(long id, List<Long> tagIds, long modifier) throws Exception;
 
-    PageVO<Article> pageSelect(int pageNum, int pageSize, String title, String summary);
+    void increaseViewCount(long id) throws Exception;
 
-    PageVO<Article> pageSelectNormal(int pageNum, int pageSize, Long categoryId);
+    PageVO<ArticleDTO> pageSelectOrderByViewCountDescWithTagId(int status, int pageNum, int pageSize, Long tagId) throws Exception;
 
-    PageVO<Article> pageSelectNormalOrderByViewCountDesc(int pageNum, int pageSize);
+    PageVO<ArticleDTO> pageSelectOrderByCreateTimeDescWithTagId(int status, int pageNum, int pageSize, Long tagId) throws Exception;
 
-    PageVO<Article> pageSelectNormalOrderByCreateTimeDesc(int pageNum, int pageSize);
+    PageVO<ArticleDTO> pageSelect(long parentId, int status, int pageNum, int pageSize) throws Exception;
+
+    PageVO<ArticleDTO> pageSelect(int pageNum, int pageSize, String title, String summary) throws Exception;
+
+    List<ArticleDTO> selectByStatusAndIdsOrParentIds(int status, List<Long> articleIds, List<Long> parentIds) throws Exception;
+
+    ArticleDetailDTO selectDetail(long id) throws Exception;
 }

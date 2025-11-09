@@ -7,9 +7,9 @@ import com.hjdmmm.blog.enums.UserOpCodeEnum;
 import com.hjdmmm.blog.service.TokenHandler;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -17,14 +17,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.OptionalLong;
 
+@AllArgsConstructor
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
 public class AuthenticationFilter extends OncePerRequestFilter {
-    private static final String TOKEN_PREFIX = "token";
+    private static final String TOKEN_PREFIX = "Bearer ";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final TokenHandler tokenHandler;
 
@@ -32,34 +32,23 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private final UserIdHolder userIdHolder;
 
-    public AuthenticationFilter(TokenHandler tokenHandler, NonControllerErrorController nonControllerErrorController, UserIdHolder userIdHolder) {
-        this.tokenHandler = tokenHandler;
-        this.nonControllerErrorController = nonControllerErrorController;
-        this.userIdHolder = userIdHolder;
-    }
-
-    private static String getTokenFromCookie(Cookie[] cookies) {
-        if (cookies == null) {
-            return null;
+    private static String getTokenFromHeader(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
+        if (authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX)) {
+            return authorizationHeader.substring(TOKEN_PREFIX.length());
         }
-
-        return Arrays.stream(cookies)
-                .filter(cookie -> TOKEN_PREFIX.equals(cookie.getName()))
-                .findFirst()
-                .map(Cookie::getValue)
-                .orElse(null);
+        return null;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = getTokenFromCookie(request.getCookies());
+        String token = getTokenFromHeader(request);
         if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 解析获取userId
-        OptionalLong userId;
+        Long userId;
         try {
             userId = tokenHandler.parseToken(token, request);
         } catch (Exception e) {
@@ -69,14 +58,14 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (userId.isEmpty()) {
+        if (userId == null) {
             log.warn("{} 提供了过时的token", request.getRemoteAddr());
             ResponseResult<Void> result = ResponseResult.errorResult(UserOpCodeEnum.BAD_TOKEN);
             nonControllerErrorController.respondExceptionTip(request, response, result);
             return;
         }
 
-        try (UserIdHolder.Session ignored = userIdHolder.newSession(userId.getAsLong())) {
+        try (UserIdHolder.Session ignored = userIdHolder.newSession(userId)) {
             filterChain.doFilter(request, response);
         }
     }

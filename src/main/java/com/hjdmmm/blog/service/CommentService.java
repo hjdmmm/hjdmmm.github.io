@@ -1,15 +1,14 @@
 package com.hjdmmm.blog.service;
 
-import com.hjdmmm.blog.domain.entity.Comment;
+import com.hjdmmm.blog.domain.model.AddCommentModel;
 import com.hjdmmm.blog.domain.vo.BlogCommentVO;
 import com.hjdmmm.blog.domain.vo.PageVO;
-import com.hjdmmm.blog.exception.IllegalArticleCommentException;
 
 public interface CommentService {
-    void add(Comment comment) throws IllegalArticleCommentException;
+    void add(AddCommentModel model, long modifier) throws Exception;
 
-    PageVO<BlogCommentVO> getArticleComments(int pageNum, int pageSize, long articleId);
+    PageVO<BlogCommentVO> getArticleComments(int pageNum, int pageSize, long articleId) throws Exception;
 
-    boolean canComment(String ip);
+    boolean canComment(String ip) throws Exception;
 }
 

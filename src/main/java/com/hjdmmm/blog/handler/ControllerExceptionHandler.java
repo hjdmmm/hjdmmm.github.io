@@ -2,8 +2,7 @@ package com.hjdmmm.blog.handler;
 
 import com.hjdmmm.blog.domain.ResponseResult;
 import com.hjdmmm.blog.enums.UserOpCodeEnum;
-import com.hjdmmm.blog.exception.ServiceException;
-import com.hjdmmm.blog.exception.UserOpException;
+import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
@@ -18,18 +17,6 @@ import java.util.Optional;
 @RestControllerAdvice
 @Slf4j
 public class ControllerExceptionHandler {
-    @ExceptionHandler(UserOpException.class)
-    public ResponseResult<Void> userOpExceptionHandler(UserOpException e) {
-        log.warn("用户操作异常", e);
-        return ResponseResult.errorResult(e.code, e.tip);
-    }
-
-    @ExceptionHandler(ServiceException.class)
-    public ResponseResult<Void> serviceExceptionHandler(ServiceException e) {
-        log.error("业务代码异常", e);
-        return ResponseResult.errorResult(UserOpCodeEnum.SERVER_ERROR);
-    }
-
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseResult<Void> methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
         log.warn("请求传递参数不匹配异常", e);
@@ -38,6 +25,12 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseResult<Void> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
+        log.warn("请求传递参数不合法异常", e);
+        return ResponseResult.errorResult(UserOpCodeEnum.METHOD_ARGUMENT_NOT_VALID);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseResult<Void> validationExceptionHandler(ValidationException e) {
         log.warn("请求传递参数不合法异常", e);
         return ResponseResult.errorResult(UserOpCodeEnum.METHOD_ARGUMENT_NOT_VALID);
     }

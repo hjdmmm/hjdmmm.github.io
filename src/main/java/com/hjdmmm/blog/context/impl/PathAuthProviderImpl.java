@@ -3,6 +3,7 @@ package com.hjdmmm.blog.context.impl;
 import com.hjdmmm.blog.annotation.Auth;
 import com.hjdmmm.blog.context.PathAuthProvider;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -12,14 +13,10 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Component
 public class PathAuthProviderImpl implements PathAuthProvider {
-
     private final DispatcherServlet dispatcherServlet;
-
-    public PathAuthProviderImpl(DispatcherServlet dispatcherServlet) {
-        this.dispatcherServlet = dispatcherServlet;
-    }
 
     @Override
     public Auth match(HttpServletRequest request) {

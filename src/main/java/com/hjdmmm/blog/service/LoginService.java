@@ -4,7 +4,7 @@ import com.hjdmmm.blog.domain.vo.LoginVO;
 import org.springframework.http.HttpHeaders;
 
 public interface LoginService {
-    LoginVO login(String username, String password, HttpHeaders httpHeaders);
+    LoginVO login(String username, String password, HttpHeaders httpHeaders) throws Exception;
 
-    void logout();
+    void logout() throws Exception;
 }

@@ -1,20 +1,21 @@
 package com.hjdmmm.blog.config;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("attachment")
-@Getter
+@Data
+@NoArgsConstructor
 public class AttachmentConfig {
     private static final String OS_TEMP_DIR = System.getProperty("java.io.tmpdir");
 
-    private final String localPath;
+    private String localPath;
 
-    public AttachmentConfig(String localPath) {
+    public String getLocalPath() {
         if (localPath == null) {
-            this.localPath = OS_TEMP_DIR;
-        } else {
-            this.localPath = localPath;
+            return OS_TEMP_DIR;
         }
+        return localPath;
     }
 }

@@ -1,22 +1,17 @@
 package com.hjdmmm.blog.service;
 
 import com.hjdmmm.blog.domain.entity.Tag;
-import com.hjdmmm.blog.domain.vo.LinkListAllVO;
+import com.hjdmmm.blog.domain.model.AddOrEditTagModel;
 import com.hjdmmm.blog.domain.vo.PageVO;
 
-import java.util.List;
-
 public interface TagService {
-    void add(Tag tag);
+    void add(AddOrEditTagModel model, long modifier) throws Exception;
 
-    void delete(long id);
+    void delete(long id, long modifier) throws Exception;
 
-    void edit(Tag tag);
+    void edit(long id, AddOrEditTagModel model, long modifier) throws Exception;
 
-    Tag get(long id);
+    Tag get(long id) throws Exception;
 
-    PageVO<Tag> list(int pageNum, int pageSize, String name, String remark);
-
-    List<LinkListAllVO> listAll();
+    PageVO<Tag> list(int pageNum, int pageSize, String keyword) throws Exception;
 }
-

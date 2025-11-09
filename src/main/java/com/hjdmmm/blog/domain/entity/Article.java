@@ -1,78 +1,55 @@
 package com.hjdmmm.blog.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("article")
+@Entity
+@Table(name = "article")
 public class Article {
-    /**
-     * 文章是草稿状态
-     */
-    public static final int ARTICLE_STATUS_DRAFT = 1;
-
-    /**
-     * 文章是正常发布状态
-     */
-    public static final int ARTICLE_STATUS_NORMAL = 0;
-
-    @TableId
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    private String title;
-
-    private String content;
-
-    private String summary;
-
-    private Long categoryId;
-
-    /**
-     * 缩略图文件ID
-     */
-    private Long thumbnailId;
-
-    /**
-     * 是否置顶（0否，1是）
-     */
-    private Integer top;
-
-    /**
-     * 是否允许评论（0否，1是）
-     */
-    private Integer comment;
-
-    /**
-     * 状态（0已发布，1草稿）
-     */
+    @Column(name = "status", nullable = false)
     private Integer status;
 
+    @Size(max = 256)
+    @Column(name = "title", nullable = false, length = 256)
+    private String title;
+
+    @Lob
+    @Column(name = "content", nullable = false, length = 65535)
+    private String content;
+
+    @Size(max = 1024)
+    @Column(name = "summary", nullable = false, length = 1024)
+    private String summary;
+
+    @Column(name = "parent_article_id", nullable = false)
+    private Long parentArticleId;
+
+    @Column(name = "view_count", nullable = false)
     private Long viewCount;
 
-    @TableField(fill = FieldFill.INSERT)
+    @Column(name = "create_by", nullable = false)
     private Long createBy;
 
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    @Column(name = "create_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Instant createTime;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @Column(name = "update_by", nullable = false)
     private Long updateBy;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
-
-    /**
-     * 删除标志（0代表未删除，1代表已删除）
-     */
-    private Integer delFlag;
+    @Column(name = "update_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    private Instant updateTime;
 
 }

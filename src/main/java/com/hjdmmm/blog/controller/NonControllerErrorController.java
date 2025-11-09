@@ -3,7 +3,6 @@ package com.hjdmmm.blog.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hjdmmm.blog.domain.ResponseResult;
 import com.hjdmmm.blog.enums.UserOpCodeEnum;
-import com.hjdmmm.blog.util.BeanUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +14,10 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ReflectionUtils;
 
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -71,6 +72,15 @@ public class NonControllerErrorController extends BasicErrorController {
         }
 
         ResponseResult<Void> result = ResponseResult.errorResult(userOpCode);
-        return BeanUtils.toMap(result);
+
+        Map<String, Object> map = new HashMap<>();
+
+        ReflectionUtils.doWithFields(result.getClass(), field -> {
+            ReflectionUtils.makeAccessible(field);
+            Object fieldValue = ReflectionUtils.getField(field, result);
+            map.put(field.getName(), fieldValue);
+        });
+
+        return map;
     }
 }

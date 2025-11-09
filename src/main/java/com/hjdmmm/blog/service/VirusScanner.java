@@ -1,9 +1,7 @@
 package com.hjdmmm.blog.service;
 
-import com.hjdmmm.blog.exception.VirusScannerException;
-
-import java.io.File;
+import java.nio.file.Path;
 
 public interface VirusScanner {
-    boolean scan(File file) throws VirusScannerException;
+    boolean scan(Path file) throws Exception;
 }

@@ -1,19 +1,20 @@
 package com.hjdmmm.blog.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hjdmmm.blog.config.LoginConfig;
-import com.hjdmmm.blog.dao.impl.mapper.UserMapper;
+import com.hjdmmm.blog.dao.UserDAO;
 import com.hjdmmm.blog.domain.entity.User;
 import com.hjdmmm.blog.domain.vo.LoginVO;
-import com.hjdmmm.blog.enums.UserOpCodeEnum;
-import com.hjdmmm.blog.exception.UserOpException;
+import com.hjdmmm.blog.enums.UserStatusEnum;
 import com.hjdmmm.blog.service.HashEncoder;
 import com.hjdmmm.blog.service.LoginService;
 import com.hjdmmm.blog.service.TokenHandler;
-import org.apache.ibatis.exceptions.TooManyResultsException;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+@AllArgsConstructor
 @Service
 public class LoginServiceImpl implements LoginService {
     private final HashEncoder hashEncoder;
@@ -22,36 +23,26 @@ public class LoginServiceImpl implements LoginService {
 
     private final TokenHandler tokenHandler;
 
-    private final UserMapper userMapper;
-
-    public LoginServiceImpl(HashEncoder hashEncoder, LoginConfig loginConfig, TokenHandler tokenHandler, UserMapper userMapper) {
-        this.hashEncoder = hashEncoder;
-        this.loginConfig = loginConfig;
-        this.tokenHandler = tokenHandler;
-        this.userMapper = userMapper;
-    }
+    private final UserDAO userDAO;
 
     @Override
-    public LoginVO login(String username, String password, HttpHeaders httpHeaders) {
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>().eq(User::getUserName, username);
-        User user;
-        try {
-            user = userMapper.selectOne(queryWrapper);
-        } catch (TooManyResultsException exception) {
-            throw new UserOpException(UserOpCodeEnum.LOGIN_ERROR);
+    public LoginVO login(String username, String password, HttpHeaders httpHeaders) throws Exception {
+        List<User> users = userDAO.selectByUsernameAndStatus(username, UserStatusEnum.NORMAL.number);
+        if (users.isEmpty()) {
+            return null;
         }
 
-        if (user == null) {
-            throw new UserOpException(UserOpCodeEnum.LOGIN_ERROR);
-        }
+        User user = users.get(0);
 
         if (!hashEncoder.verify(password, user.getPassword())) {
-            throw new UserOpException(UserOpCodeEnum.LOGIN_ERROR);
+            return null;
         }
 
-        Long userId = user.getId();
-        String token = tokenHandler.createToken(String.valueOf(userId), httpHeaders);
-        return new LoginVO(token, (int) loginConfig.getExpireSeconds().getSeconds());
+        String token = tokenHandler.createToken(String.valueOf(user.getId()), httpHeaders);
+        return LoginVO.builder()
+            .token(token)
+            .tokenMaxAgeSeconds(Math.toIntExact(loginConfig.getExpireSeconds().getSeconds()))
+            .build();
     }
 
     @Override

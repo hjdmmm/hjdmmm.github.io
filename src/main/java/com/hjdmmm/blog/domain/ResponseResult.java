@@ -17,11 +17,11 @@ public class ResponseResult<T> {
     private ResponseResult() {
     }
 
-    public static ResponseResult<Void> errorResult(int code, String msg) {
-        return new ResponseResult<Void>().setCode(code).setMsg(msg);
+    public static <T> ResponseResult<T> errorResult(int code, String msg) {
+        return new ResponseResult<T>().setCode(code).setMsg(msg);
     }
 
-    public static ResponseResult<Void> errorResult(UserOpCodeEnum userOpCode) {
+    public static <T> ResponseResult<T> errorResult(UserOpCodeEnum userOpCode) {
         return errorResult(userOpCode.code, userOpCode.defaultTip);
     }
 

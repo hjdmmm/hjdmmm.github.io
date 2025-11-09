@@ -1,12 +1,11 @@
 package com.hjdmmm.blog.service;
 
-import com.hjdmmm.blog.exception.ImageCompressException;
 import org.springframework.http.MediaType;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public interface ImageCompressor {
-    boolean support(MediaType mediaType);
+    boolean support(MediaType mediaType) throws Exception;
 
-    void compress(File originFile, int maxWidth) throws ImageCompressException;
+    void compress(Path originFile, int maxWidth) throws Exception;
 }

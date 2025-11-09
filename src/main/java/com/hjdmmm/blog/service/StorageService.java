@@ -1,9 +1,11 @@
 package com.hjdmmm.blog.service;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public interface StorageService {
-    String upload(File tmpFile, long id);
+    String upload(Path tmpFile, long id) throws Exception;
 
-    File download(String url);
+    Path download(String url) throws Exception;
+
+    void delete(String url) throws Exception;
 }

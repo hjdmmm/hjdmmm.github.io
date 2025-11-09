@@ -1,24 +1,20 @@
 package com.hjdmmm.blog.service;
 
-import com.hjdmmm.blog.domain.vo.ImageListVO;
+import com.hjdmmm.blog.domain.entity.Attachment;
 import com.hjdmmm.blog.domain.vo.PageVO;
 import com.hjdmmm.blog.domain.vo.PreviewImageVO;
-import com.hjdmmm.blog.exception.AttachmentNotExistException;
-import com.hjdmmm.blog.exception.FileHasVirusException;
-import com.hjdmmm.blog.exception.PreviewImageException;
-import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
+
 public interface AttachmentService {
-    long upload(MultipartFile file, boolean scanVirus) throws FileHasVirusException;
+    Path storeLocal(MultipartFile file) throws Exception;
 
-    void delete(long id);
+    long upload(Path file, String originalFileName, String mimeType, long userId) throws Exception;
 
-    void replace(long sourceId, long destinationId) throws AttachmentNotExistException;
+    void delete(long id, long userId) throws Exception;
 
-    PageVO<ImageListVO> listImages(int pageNum, int pageSize, String name);
+    PageVO<Attachment> listImages(int pageNum, int pageSize, String name) throws Exception;
 
-    PreviewImageVO previewImage(long attachmentId) throws PreviewImageException;
-
-    Resource download(String url);
+    PreviewImageVO previewImage(long attachmentId) throws Exception;
 }

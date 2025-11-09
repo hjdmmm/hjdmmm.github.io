@@ -1,25 +1,21 @@
 package com.hjdmmm.blog.domain.vo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class BlogCommentVO {
-    private Long id;
-    private Long articleId;
-    private Long pid;
-    private String content;
-    private Long toCommentUserId;
-    private String toCommentUserNickName;
-    private Long toCommentId;
-    private Long createBy;
-    private LocalDateTime createTime;
-    private String nickName;
-    private List<BlogCommentVO> children;
+@Builder
+public record BlogCommentVO(
+    long id,
+    long articleId,
+    Long pid,
+    String content,
+    Long toCommentUserId,
+    String toCommentUsername,
+    Long toCommentId,
+    Instant createTime,
+    String username,
+    List<BlogCommentVO> children
+) {
 }

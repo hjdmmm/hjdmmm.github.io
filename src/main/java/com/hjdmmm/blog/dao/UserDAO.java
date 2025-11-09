@@ -1,25 +1,25 @@
 package com.hjdmmm.blog.dao;
 
+import com.hjdmmm.blog.domain.dto.UserDTO;
 import com.hjdmmm.blog.domain.entity.User;
 import com.hjdmmm.blog.domain.vo.PageVO;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface UserDAO {
-    void insert(User user);
+    void insert(User user) throws Exception;
 
-    void delete(long id);
+    void delete(long id) throws Exception;
 
-    void updateById(User user);
+    void updateById(User user) throws Exception;
 
-    void update(long id, Integer status);
+    UserDTO select(long id) throws Exception;
 
-    User select(long id);
+    List<UserDTO> selectAll(List<Long> ids) throws Exception;
 
-    List<User> select(Collection<Long> ids);
+    PageVO<UserDTO> pageSelect(int pageNum, int pageSize, String username, Integer type, Integer status) throws Exception;
 
-    PageVO<User> pageSelect(int pageNum, int pageSize, String userName, Integer type, Integer status);
+    long countByUsernameForUpdate(String username) throws Exception;
 
-    long countByUserNameForUpdate(String userName);
+    List<User> selectByUsernameAndStatus(String username, int status) throws Exception;
 }

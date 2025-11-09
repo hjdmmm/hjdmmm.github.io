@@ -1,13 +1,10 @@
 package com.hjdmmm.blog.domain.vo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class LoginVO {
-    private String token;
-    private Integer tokenMaxAgeSeconds;
+@Builder
+public record LoginVO(
+    String token,
+    int tokenMaxAgeSeconds
+) {
 }
