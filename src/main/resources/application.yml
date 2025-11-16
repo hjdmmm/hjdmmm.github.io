@@ -12,6 +12,10 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: validate
+    properties:
+      hibernate:
+        type:
+          preferred_instant_jdbc_type: TIMESTAMP
 article:
   normal-article-tag-id: 1
 ---
