@@ -53,6 +53,12 @@ export interface Tag {
     remark: string
 }
 
+export interface FeedArticleInfo {
+    hotArticleIds: string[]
+    latestArticleIds: string[]
+    categoryArticleIdPage: PageResult<string[]>
+}
+
 export const SUCCESS_CODE = 200;
 
 const buildUrl = (url: string, requestParams: object) => {
@@ -241,22 +247,19 @@ export const updateArticleTags = async (id: string, tagIds: string[]): Promise<R
     });
 }
 
-export const getHotArticleIds = async (): Promise<ResponseResult<string[]>> => {
+export const getFeedArticleInfo = async (): Promise<ResponseResult<FeedArticleInfo>> => {
     if (debugMode) {
         await delay(300);
-        return mockSuccessResponse(['article_1', 'article_2', 'article_3', 'article_4', 'article_5']);
+        return mockSuccessResponse({
+            hotArticleIds: ['article_1', 'article_2', 'article_3', 'article_4', 'article_5'],
+            latestArticleIds: ['article_1', 'article_2', 'article_8', 'article_9', 'article_10'],
+            categoryArticleIdPage: {
+                rows: ['article_1', 'article_2', 'article_3'],
+                total: '10'
+            }
+        });
     }
-
-    return await request<string[]>(`${BASE_URL}/article/hotArticleIds`);
-}
-
-export const getLatestArticleIds = async (): Promise<ResponseResult<string[]>> => {
-    if (debugMode) {
-        await delay(300);
-        return mockSuccessResponse(['article_6', 'article_7', 'article_8', 'article_9', 'article_10']);
-    }
-
-    return await request<string[]>(`${BASE_URL}/article/latestArticleIds`);
+    return await request<FeedArticleInfo>(`${BASE_URL}/feed/articleInfo`);
 }
 
 export const listCategoryArticleIds = async (pageNum: number, pageSize: number): Promise<ResponseResult<PageResult<string[]>>> => {

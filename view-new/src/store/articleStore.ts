@@ -6,8 +6,7 @@ import {
     deleteArticle,
     getArticleDetail,
     getArticleNodes,
-    getHotArticleIds,
-    getLatestArticleIds,
+    getFeedArticleInfo,
     increaseArticleViewCount,
     listCategoryArticleIds,
     listTags,
@@ -37,7 +36,7 @@ export const loadingDetail = ref(false);
 export const savingTitle = ref(false);
 export const savingContent = ref(false);
 
-export const categoryPageSize = 10;
+export const categoryPageSize = ref(10);
 export const categoryPageNum = ref(1)
 export const categoryHasMore = ref(true)
 export const loadingMoreArticle = ref(false)
@@ -89,7 +88,7 @@ export const loadCategoryArticles = async () => {
     }
     loadingMoreArticle.value = true;
     try {
-        const page = getSuccessData(await listCategoryArticleIds(categoryPageNum.value, categoryPageSize));
+        const page = getSuccessData(await listCategoryArticleIds(categoryPageNum.value, categoryPageSize.value));
         const newCategoryArticleIds = page.rows;
         if (newCategoryArticleIds.length > 0) {
             const newArticleNodes = getSuccessData(await getArticleNodes(newCategoryArticleIds));
@@ -98,7 +97,7 @@ export const loadCategoryArticles = async () => {
             })
             categoryArticleTree.value = [...categoryArticleTree.value, ...newCategoryArticleIds];
         }
-        categoryHasMore.value = newCategoryArticleIds.length === categoryPageSize && categoryArticleTree.value.length < parseInt(page.total);
+        categoryHasMore.value = newCategoryArticleIds.length === categoryPageSize.value && categoryArticleTree.value.length < parseInt(page.total);
         categoryPageNum.value++;
     } finally {
         loadingMoreArticle.value = false;
@@ -148,12 +147,14 @@ export const updateContent = (newContent: string) => {
 export const initAllArticles = async () => {
     categoryArticleTree.value = []
     categoryPageNum.value = 1
+    categoryPageSize.value = 10;
     categoryHasMore.value = false
     loadingMoreArticle.value = true
     try {
-        const hotArticleIds = getSuccessData(await getHotArticleIds());
-        const latestArticleIds = getSuccessData(await getLatestArticleIds());
-        const page = getSuccessData(await listCategoryArticleIds(categoryPageNum.value, categoryPageSize));
+        const feedArticleInfo = getSuccessData(await getFeedArticleInfo());
+        const hotArticleIds = feedArticleInfo.hotArticleIds;
+        const latestArticleIds = feedArticleInfo.latestArticleIds;
+        const page = feedArticleInfo.categoryArticleIdPage;
         const categoryArticleIds = page.rows;
         const articleIds = [...new Set([...hotArticleIds, ...latestArticleIds, ...categoryArticleIds])];
         if (articleIds.length > 0) {
@@ -165,7 +166,7 @@ export const initAllArticles = async () => {
         hotArticleTree.value = hotArticleIds
         latestArticleTree.value = latestArticleIds
         categoryArticleTree.value = categoryArticleIds
-        categoryHasMore.value = categoryArticleIds.length === categoryPageSize && categoryArticleIds.length < parseInt(page.total);
+        categoryHasMore.value = categoryArticleIds.length === categoryPageSize.value && categoryArticleIds.length < parseInt(page.total);
         categoryPageNum.value++;
     } finally {
         loadingMoreArticle.value = false;
@@ -310,7 +311,7 @@ export const loadTags = async () => {
         if (newTags.length > 0) {
             availableTags.value = [...availableTags.value, ...newTags];
         }
-        tagsHasMore.value = newTags.length === categoryPageSize && availableTags.value.length < parseInt(page.total);
+        tagsHasMore.value = newTags.length === tagsPageSize && availableTags.value.length < parseInt(page.total);
         tagsPageNum.value++;
     } finally {
         loadingMoreTags.value = false;
