@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import Blog from "@/components/Blog.vue";
 import {Toaster} from '@/components/ui/sonner';
 import 'vue-sonner/style.css';
+import {RouterView} from 'vue-router'
 </script>
 
 <template>
   <Toaster/>
-  <Blog/>
+  <RouterView/>
 </template>

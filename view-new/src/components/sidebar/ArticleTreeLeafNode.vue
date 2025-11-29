@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import {SidebarMenuButton, SidebarMenuItem} from "@/components/ui/sidebar";
 import {cn} from "@/lib/utils.ts";
-import {articleNodeMap, changeParent, selectedArticleId, updateSelectedArticleId} from '@/store/articleStore.ts';
+import {articleNodeMap, changeParent, selectedArticleId} from '@/store/articleStore.ts';
 import {user} from "@/store/userStore.ts";
 import {computed} from 'vue'
+import {useRouter} from 'vue-router'
+
+const router = useRouter();
 
 const levelVariants = new Map<number, string>([
   [0, "ps-0"],
@@ -35,7 +38,7 @@ const buttonClass = computed(() => {
 });
 
 const select = async () => {
-  await updateSelectedArticleId(props.nodeId);
+  await router.push(`/article/${props.nodeId}`)
 };
 
 const isChildNode = (nodeId: string, parentId: string): boolean => {
