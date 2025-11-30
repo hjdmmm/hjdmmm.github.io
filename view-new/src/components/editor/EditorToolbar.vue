@@ -34,6 +34,7 @@ import Color from "color";
 import {
   Baseline,
   Bold,
+  ChartNetwork,
   ChevronDown,
   Code,
   Italic,
@@ -420,6 +421,14 @@ const handleBackgroundColorChange = (color: ColorInstance | null) => {
           </SelectGroup>
         </SelectContent>
       </Select>
+      <Button
+          :disabled="!editor.can().chain().setMermaid('').run()"
+          size="sm"
+          variant="ghost"
+          @click="editor.chain().focus().setMermaid('').run()"
+      >
+        <ChartNetwork class="h-4 w-4"/>
+      </Button>
     </div>
 
     <Separator class="data-[orientation=vertical]:h-6" orientation="vertical"/>

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import CreateTagDialog from "@/components/editor/CreateTagDialog.vue";
+import Diagram from "@/components/editor/diagram";
 import EditorToolbar from "@/components/editor/EditorToolbar.vue";
 import {isColHeader, isRowHeader} from "@/components/editor/tableUtils.ts";
 import {Badge} from '@/components/ui/badge';
@@ -133,6 +134,7 @@ const editor = useEditor({
     TaskItem.configure({
       nested: true,
     }),
+    Diagram,
   ],
   onUpdate: ({editor}) => {
     onContentUpdated(editor.getHTML());
