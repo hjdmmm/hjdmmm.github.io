@@ -30,25 +30,34 @@ const dialogOpen = ref(false);
 const code = ref(props.node.attrs.code || '');
 const diagramType = ref(props.node.attrs.type);
 const scale = ref(props.node.attrs.ratio || 1);
-const isResizing = ref(false);
+const resizing = ref(false);
 const startX = ref(0);
 const startY = ref(0);
 const startScale = ref(0);
 const resizeScale = ref(0);
 const originalSize = ref({width: 0, height: 0});
-
+const loadingMermaid = ref(false);
 let mermaid: any = null;
+
 const loadMermaid = async () => {
-  if (mermaid) {
+  if (mermaid || loadingMermaid.value) {
     return;
   }
-  // @ts-expect-error
-  const module = await import('https://cdn.jsdelivr.net/npm/mermaid@11.12.2/+esm');
-  mermaid = module.default;
-  mermaid.initialize({
-    startOnLoad: false,
-    suppressErrorRendering: true,
-  });
+  loadingMermaid.value = true;
+  try {
+    // @ts-expect-error
+    const module = await import('https://cdn.jsdelivr.net/npm/mermaid@11.12.2/+esm');
+    mermaid = module.default;
+    mermaid.initialize({
+      startOnLoad: false,
+      suppressErrorRendering: true,
+    });
+  } catch (e) {
+    mermaid = null;
+    throw e;
+  } finally {
+    loadingMermaid.value = false;
+  }
 };
 
 const renderMermaid = async (newCode: string) => {
@@ -57,7 +66,13 @@ const renderMermaid = async (newCode: string) => {
     diagramHtml.value = '';
     return;
   }
-  await loadMermaid();
+  try {
+    await loadMermaid();
+  } catch (e) {
+    status.value = DiagramStatus.Invalid;
+    return;
+  }
+
   try {
     const {svg} = await mermaid.render(
         `mermaid-${Math.random().toString(36).substring(2, 15)}`,
@@ -117,7 +132,7 @@ const containerStyle = computed(() => {
   };
 });
 const diagramStyle = computed(() => {
-  if (isResizing.value) {
+  if (resizing.value) {
     return {
       transform: `scale(${resizeScale.value})`,
       transformOrigin: 'top left',
@@ -130,7 +145,7 @@ const startResize = (e: MouseEvent) => {
   if (!props.editor.isEditable) {
     return;
   }
-  isResizing.value = true;
+  resizing.value = true;
   startX.value = e.clientX;
   startY.value = e.clientY;
   startScale.value = scale.value;
@@ -140,7 +155,7 @@ const startResize = (e: MouseEvent) => {
 };
 
 const resize = (e: MouseEvent) => {
-  if (!isResizing.value) {
+  if (!resizing.value) {
     return;
   }
   const deltaX = e.clientX - startX.value;
@@ -151,7 +166,7 @@ const resize = (e: MouseEvent) => {
 };
 
 const stopResize = () => {
-  isResizing.value = false;
+  resizing.value = false;
   document.removeEventListener('mousemove', resize);
   document.removeEventListener('mouseup', stopResize);
   props.updateAttributes({

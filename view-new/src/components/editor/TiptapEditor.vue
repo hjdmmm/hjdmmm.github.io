@@ -17,6 +17,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger} from '@/components/ui/select';
 import {Separator} from '@/components/ui/separator';
 import {
@@ -327,7 +328,7 @@ onBeforeUnmount(async () => {
         </div>
 
         <ContextMenu>
-          <ContextMenuTrigger :disabled="!editor.isActive('table')">
+          <ContextMenuTrigger :disabled="!editable || (!editor.isActive('table') && !editor.isActive('codeBlock'))">
             <EditorContent :editor="editor"/>
           </ContextMenuTrigger>
           <ContextMenuContent class="w-auto min-w-48">
@@ -394,6 +395,24 @@ onBeforeUnmount(async () => {
                   :disabled="!editor.can().chain().focus().fixTables().run()"
                   @click="editor.chain().focus().fixTables().run()">
                 修复表格
+              </ContextMenuItem>
+              <ContextMenuSeparator/>
+            </ContextMenuGroup>
+            <ContextMenuGroup v-if="editor.isActive('codeBlock')">
+              <ContextMenuLabel class="font-bold">代码块操作</ContextMenuLabel>
+              <ContextMenuItem class="flex">
+                <Label for="language">
+                  语言
+                </Label>
+                <Input
+                    :modelValue="editor.getAttributes('codeBlock').language"
+                    id="language"
+                    class="w-auto h-8 text-xs"
+                    placeholder="请输入语言"
+                    @input="editor.chain().toggleCodeBlock({language: $event.target.value}).run()"
+                    @click.stop
+                    @pointermove.stop
+                />
               </ContextMenuItem>
               <ContextMenuSeparator/>
             </ContextMenuGroup>

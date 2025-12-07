@@ -1,6 +1,6 @@
 import {createApp} from 'vue'
 import './index.css'
-import {createRouter, createWebHistory} from 'vue-router'
+import {createRouter, createWebHashHistory} from 'vue-router'
 import App from './App.vue'
 import Blog from './components/Blog.vue'
 
@@ -10,7 +10,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes
 })
 

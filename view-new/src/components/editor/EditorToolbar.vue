@@ -395,12 +395,12 @@ const handleBackgroundColorChange = (color: ColorInstance | null) => {
         </PopoverContent>
       </Popover>
       <Select
-          :disabled="!editor.can().chain().focus().setCodeBlock().run() && !editor.getAttributes('codeBlock').language"
+          :disabled="!editor.can().chain().focus().setCodeBlock().run() && !editor.isActive('codeBlock')"
           :modelValue="editor.getAttributes('codeBlock').language"
       >
         <SelectTrigger :show-default="false" class="p-0 border-0">
           <Toggle
-              :modelValue="!!editor.getAttributes('codeBlock').language"
+              :modelValue="editor.isActive('codeBlock')"
               size="sm"
           >
             <SquareCode class="h-4 w-4"/>
